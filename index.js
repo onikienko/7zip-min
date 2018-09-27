@@ -36,4 +36,3 @@ function onceify(fn) {
 
 exports.unpack = unpack;
 exports.pack = pack;
-exports.cmd = cmd;
