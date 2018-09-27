@@ -7,7 +7,7 @@ This package includes standalone **7za** version of **7-Zip** (uses precompiled 
 Install
 -------
 
-`npm i 7zee`
+`npm i 7zip-min`
 
 Usage
 -----
