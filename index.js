@@ -3,12 +3,33 @@
 const spawn = require('child_process').spawn;
 const path7za = require('7zip-bin').path7za;
 
+/**
+ * Unpack archive.
+ * @param {string} pathToPack - path to archive you want to unpack.
+ * @param {string} destPath - destination path. Where to unpack.
+ * @param {function} cb - callback function. Will be called once unpack is done. If no errors, first parameter will contain `null`
+ */
 function unpack(pathToPack, destPath, cb) {
     run(path7za, ['x', pathToPack, '-y', '-o' + destPath], cb);
 }
 
+/**
+ * Pack file or folder to archive.
+ * @param {string} pathToSrc - path to file or folder you want to compress.
+ * @param {string} pathToDest - path to archive you want to create.
+ * @param {function} cb - callback function. Will be called once pack is done. If no errors, first parameter will contain `null`.
+ */
 function pack(pathToSrc, pathToDest, cb) {
     run(path7za, ['a', pathToDest, pathToSrc], cb);
+}
+
+/**
+ * Run 7za with parameters specified in `paramsArr`.
+ * @param {array} paramsArr - array of parameter. Each array item is one parameter.
+ * @param {function} cb - callback function. Will be called once command is done. If no errors, first parameter will contain `null`.
+ */
+function cmd(paramsArr, cb) {
+    run(path7za, paramsArr, cb);
 }
 
 function run(bin, args, cb) {
@@ -36,3 +57,4 @@ function onceify(fn) {
 
 exports.unpack = unpack;
 exports.pack = pack;
+exports.cmd = cmd;

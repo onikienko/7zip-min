@@ -1,7 +1,7 @@
 {
   "name": "7zip-min",
   "version": "0.0.2",
-  "description": "Cross-platform zip/unzip with 7za",
+  "description": "Standalone cross-platform zip/unzip with 7za",
   "main": "index.js",
   "scripts": {
     "test": "ava"
@@ -17,7 +17,12 @@
     "7za",
     "compress",
     "decompress",
-    "extract"
+    "extract",
+    "lzma",
+    "zip",
+    "gzip",
+    "bzip2",
+    "tar"
   ],
   "author": "Mykhailo Onikiienko <michael.onikienko@gmail.com>",
   "license": "MIT",
