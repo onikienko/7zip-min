@@ -44,12 +44,12 @@ function cmd(paramsArr, cb) {
 function run(bin, args, cb) {
     cb = onceify(cb);
     const proc = spawn(bin, args);
-    output = '';
+    let output = '';
     proc.on('error', function (err) {
         cb(err);
     });
     proc.on('exit', function (code) {
-        result = null;
+        let result = null;
         if(args[0] = 'l') {
             result = parseListCmd(output);
         }
@@ -74,19 +74,20 @@ function onceify(fn) {
 
 function parseListCmd(output) {
     const regex = /(?:(\d{4}-\d{2}-\d{2}) +(\d{2}:\d{2}:\d{2}) +((?:[D.]){1}(?:[R.]){1}(?:[H.]){1}(?:[S.]){1}(?:[A.]){1}) +(\d{1,12}) +(\d{1,12}) +(.+))\n*/g;
-    result = [];
+    let result = [];
+    let m;
     while ((m = regex.exec(output)) !== null) {
         // This is necessary to avoid infinite loops with zero-width matches
         if (m.index === regex.lastIndex) {
             regex.lastIndex++;
         }
         
-        date = "";
-        time = "";
-        attr = "";
-        size = 0;
-        compressed = 0;
-        name = "";
+        let date = "";
+        let time = "";
+        let attr = "";
+        let size = 0;
+        let compressed = 0;
+        let name = "";
 
         m.forEach((match, groupIndex) => {
             switch (groupIndex) {
