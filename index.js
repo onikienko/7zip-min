@@ -24,6 +24,15 @@ function pack(pathToSrc, pathToDest, cb) {
 }
 
 /**
+ * Get an array with compressed file contents.
+ * @param {string} pathToSrc - path to file its content you want to list.
+ * @param {function} cb - callback function. Will be called once list is done. If no errors, first parameter will contain `null`.
+ */
+function list(pathToSrc, cb) {
+    run(path7za, ['l', pathToSrc], cb);
+}
+
+/**
  * Run 7za with parameters specified in `paramsArr`.
  * @param {array} paramsArr - array of parameter. Each array item is one parameter.
  * @param {function} cb - callback function. Will be called once command is done. If no errors, first parameter will contain `null`.
@@ -35,11 +44,66 @@ function cmd(paramsArr, cb) {
 function run(bin, args, cb) {
     cb = onceify(cb);
     const proc = spawn(bin, args);
+    let output = '';
     proc.on('error', function (err) {
         cb(err);
     });
     proc.on('exit', function (code) {
-        cb(code ? new Error('Exited with code ' + code) : null);
+        let result = null;
+        if(args[0] = 'l') {
+            const regex = /(?:(\d{4}-\d{2}-\d{2}) +(\d{2}:\d{2}:\d{2}) +((?:[D.]){1}(?:[R.]){1}(?:[H.]){1}(?:[S.]){1}(?:[A.]){1}) +(\d{1,12}) +(\d{1,12}) +(.+))\n*/g;
+            let m;
+            result = [];
+            while ((m = regex.exec(output)) !== null) {
+                // This is necessary to avoid infinite loops with zero-width matches
+                if (m.index === regex.lastIndex) {
+                    regex.lastIndex++;
+                }
+                
+                let date = "";
+                let time = "";
+                let attr = "";
+                let size = 0;
+                let compressed = 0;
+                let name = "";
+
+                m.forEach((match, groupIndex) => {
+                    switch (groupIndex) {
+                        case 1:
+                            date = match;
+                            break;
+                        case 2:
+                            time = match;
+                            break;
+                        case 3:
+                            attr = match.replace(/\./g,'');
+                            break;
+                        case 4: 
+                            size = match;
+                            break;
+                        case 5:
+                            compressed = match;
+                            break;
+                        case 6:
+                            name = match;
+
+                            result.push({
+                                date: date,
+                                time: time,
+                                attr: attr,
+                                size: size,
+                                compressed: compressed,
+                                name: name,
+                            });
+                            break;
+                    }
+                });
+            }
+        }
+        cb(code ? new Error('Exited with code ' + code) : null, result);
+    });
+    proc.stdout.on('data', (chunk) => {
+        output += chunk.toString();
     });
 }
 
