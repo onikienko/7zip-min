@@ -50,7 +50,7 @@ function run(bin, args, cb) {
     });
     proc.on('exit', function (code) {
         let result = null;
-        if(args[0] = 'l') {
+        if(args[0] === 'l') {
             result = parseListCmd(output);
         }
         cb(code ? new Error('Exited with code ' + code) : null, result);
