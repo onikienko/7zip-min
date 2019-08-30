@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.1.0](https://github.com/onikienko/7zip-min/tree/v1.1.0) (2019-08-30)
+
+- Added `list` command
+
 ## [v1.0.1](https://github.com/onikienko/7zip-min/tree/v1.0.1) (2018-10-14)
 
 - Added CHANGELOG.md file
