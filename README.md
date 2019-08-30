@@ -50,12 +50,9 @@ _7z.pack('path/to/dir/or/file', 'path/to/archive.7z', err => {
 
 // list
 _7z.list('path/to/archive.7z', (err, result) => {
-    console.log(result.name);
-    console.log(result.date);
-    console.log(result.time);
-    console.log(result.attr);
-    console.log(result.size);
-    console.log(result.compressed);
+    // in result you will have an array with info list for your archive
+    // for each element in archive you will have:
+    // name, date, time, attr, size (in bytes), compressed (compressed size in bytes)
 });
 
 // cmd
