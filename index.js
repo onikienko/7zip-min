@@ -50,7 +50,7 @@ function run(bin, args, cb) {
     });
     proc.on('exit', function (code) {
         let result = null;
-        if(args[0] === 'l') {
+        if (args[0] === 'l') {
             result = parseListCmd(output);
         }
         cb(code ? new Error('Exited with code ' + code) : null, result);
@@ -81,7 +81,7 @@ function parseListCmd(output) {
         if (m.index === regex.lastIndex) {
             regex.lastIndex++;
         }
-        
+
         let date = "";
         let time = "";
         let attr = "";
@@ -98,9 +98,9 @@ function parseListCmd(output) {
                     time = match;
                     break;
                 case 3:
-                    attr = match.replace(/\./g,'');
+                    attr = match.replace(/\./g, '');
                     break;
-                case 4: 
+                case 4:
                     size = match;
                     break;
                 case 5:
