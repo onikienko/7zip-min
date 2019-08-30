@@ -1,6 +1,6 @@
 {
   "name": "7zip-min",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Standalone cross-platform zip/unzip with 7za",
   "main": "index.js",
   "scripts": {
