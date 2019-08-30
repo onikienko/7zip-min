@@ -29,7 +29,9 @@ To get more details check [7zip-bin](https://github.com/develar/7zip-bin) packag
 Usage
 -----
 
-You may use `pack` and `unpack` methods for simple packing/unpacking.
+You may use `pack` and `unpack` methods for simple packing/unpacking. 
+
+You can also use `list` to get an array with the file content properties (includes date, time, attr, size, compressed and name)
 
 Or use `cmd` to run 7za with custom parameters (see [Command Line Version User's Guide](https://sevenzip.osdn.jp/chm/cmdline/index.htm))
 
@@ -44,6 +46,16 @@ _7z.unpack('path/to/archive.7z', 'where/to/unpack', err => {
 // pack
 _7z.pack('path/to/dir/or/file', 'path/to/archive.7z', err => {
     // done
+});
+
+// list
+_7z.list('path/to/archive.7z', (err, result) => {
+    console.log(result.name);
+    console.log(result.date);
+    console.log(result.time);
+    console.log(result.attr);
+    console.log(result.size);
+    console.log(result.compressed);
 });
 
 // cmd
