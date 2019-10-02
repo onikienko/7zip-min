@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.1.1](https://github.com/onikienko/7zip-min/tree/v1.1.1) (2019-10-02)
+
+- Update dependencies
+
 ## [v1.1.0](https://github.com/onikienko/7zip-min/tree/v1.1.0) (2019-08-30)
 
 - Added `list` command
