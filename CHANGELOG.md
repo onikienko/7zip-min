@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.1.2](https://github.com/onikienko/7zip-min/tree/v1.1.2) (2020-05-05)
+
+- Bump ava from 2.4.0 to 3.8.1
+
 ## [v1.1.1](https://github.com/onikienko/7zip-min/tree/v1.1.1) (2019-10-02)
 
 - Update dependencies
