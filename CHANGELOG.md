@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.1.3](https://github.com/onikienko/7zip-min/tree/v1.1.3) (2020-09-02)
+
+- Bump ava from 3.8.1 to 3.12.1
+- Bump lodash to 4.17.19
+
 ## [v1.1.2](https://github.com/onikienko/7zip-min/tree/v1.1.2) (2020-05-05)
 
 - Bump ava from 2.4.0 to 3.8.1
