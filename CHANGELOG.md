@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.2.0](https://github.com/onikienko/7zip-min/tree/v1.1.3) (2020-10-13)
+
+- Make output path for `.unpack` optional (if not provided will unpack in the current dir)
+- Bump ava from 3.12.1 to 3.13.0
+
 ## [v1.1.3](https://github.com/onikienko/7zip-min/tree/v1.1.3) (2020-09-02)
 
 - Bump ava from 3.8.1 to 3.12.1
