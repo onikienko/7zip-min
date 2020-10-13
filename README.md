@@ -43,6 +43,11 @@ _7z.unpack('path/to/archive.7z', 'where/to/unpack', err => {
     // done
 });
 
+// unpack into the current directory if no output directory specified
+_7z.unpack('path/to/archive.7z', err => {
+    // done
+});
+
 // pack
 _7z.pack('path/to/dir/or/file', 'path/to/archive.7z', err => {
     // done
