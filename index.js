@@ -6,11 +6,20 @@ const path7za = require('7zip-bin').path7za;
 /**
  * Unpack archive.
  * @param {string} pathToPack - path to archive you want to unpack.
- * @param {string} destPath - destination path. Where to unpack.
+ * @param {string/function} destPathOrCb - Either:
+ *                                              (i) destination path, where to unpack.
+ *                                              (ii) callback function, in case no destPath to be specified
  * @param {function} cb - callback function. Will be called once unpack is done. If no errors, first parameter will contain `null`
+ * NOTE: Providing destination path is optional. In case it is not provided, cb is expected as the second argument to function.
  */
-function unpack(pathToPack, destPath, cb) {
-    run(path7za, ['x', pathToPack, '-y', '-o' + destPath], cb);
+function unpack(pathToPack, destPathOrCb, cb) {
+    if (typeof destPathOrCb === "function" && cb === undefined) {
+        cb = destPathOrCb;
+        run(path7za, ['x', pathToPack, '-y'], cb);
+    }
+    else{
+        run(path7za, ['x', pathToPack, '-y', '-o' + destPathOrCb], cb);
+    }
 }
 
 /**

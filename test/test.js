@@ -11,6 +11,11 @@ let srcFile = join(srcFolder, 'test-file.txt');
 let archPath = join(__dirname, 'pack.7z');
 let destPath = join(__dirname, 'pack_dest');
 
+let srcFolder1 = join(__dirname, "test-folder1");
+let srcFile1 = join(srcFolder1, "test-file.txt");
+let archPath1 = join(__dirname, "pack1.7z");
+let destPath1 = join(process.cwd(), "test-folder1");
+
 test.serial('pack', async t => {
     // compress
     await t2p(cb => {
@@ -55,9 +60,30 @@ test.serial('unpack', async t => {
     t.deepEqual(files, expected);
 });
 
+test.serial("unpack_to_current_path", async (t) => {
+    // decompress
+    await fs.copyAsync(srcFolder, srcFolder1);
+    await t2p((cb) => {
+        _7z.pack(srcFolder1, archPath1, cb);
+    });
+    await fs.removeAsync(srcFolder1);
+    await t2p((cb) => {
+        _7z.unpack(archPath1, cb);
+    });
+    // verify
+    let exists = await fs.existsAsync(destPath1);
+    t.true(exists);
+    let files = await fs.readdirAsync(destPath1);
+    let expected = [basename(srcFile1)];
+    t.deepEqual(files, expected);
+
+});
+
 test.after.always('cleanup', async t => {
     await remove(destPath);
     await remove(archPath);
+    await remove(destPath1);
+    await remove(archPath1);
 });
 
 // util: remove file if exists
