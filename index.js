@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const spawn = require('child_process').spawn;
 const path7za = require('7zip-bin').path7za;
@@ -6,18 +6,17 @@ const path7za = require('7zip-bin').path7za;
 /**
  * Unpack archive.
  * @param {string} pathToPack - path to archive you want to unpack.
- * @param {string/function} destPathOrCb - Either:
+ * @param {string|function} destPathOrCb - Either:
  *                                              (i) destination path, where to unpack.
  *                                              (ii) callback function, in case no destPath to be specified
- * @param {function} cb - callback function. Will be called once unpack is done. If no errors, first parameter will contain `null`
+ * @param {function} [cb] - callback function. Will be called once unpack is done. If no errors, first parameter will contain `null`
  * NOTE: Providing destination path is optional. In case it is not provided, cb is expected as the second argument to function.
  */
 function unpack(pathToPack, destPathOrCb, cb) {
-    if (typeof destPathOrCb === "function" && cb === undefined) {
+    if (typeof destPathOrCb === 'function' && cb === undefined) {
         cb = destPathOrCb;
         run(path7za, ['x', pathToPack, '-y'], cb);
-    }
-    else{
+    } else {
         run(path7za, ['x', pathToPack, '-y', '-o' + destPathOrCb], cb);
     }
 }
@@ -77,8 +76,8 @@ function onceify(fn) {
     return function () {
         if (called) return;
         called = true;
-        fn.apply(this, Array.prototype.slice.call(arguments)) // slice arguments
-    }
+        fn.apply(this, Array.prototype.slice.call(arguments)); // slice arguments
+    };
 }
 
 function parseListCmd(output) {
@@ -91,12 +90,12 @@ function parseListCmd(output) {
             regex.lastIndex++;
         }
 
-        let date = "";
-        let time = "";
-        let attr = "";
+        let date = '';
+        let time = '';
+        let attr = '';
         let size = 0;
         let compressed = 0;
-        let name = "";
+        let name = '';
 
         m.forEach((match, groupIndex) => {
             switch (groupIndex) {
