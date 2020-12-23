@@ -1,4 +1,8 @@
 # Changelog
+## [v1.2.1](https://github.com/onikienko/7zip-min/tree/v1.2.1) (2020-12-23)
+
+- [Security] Bump ini from 1.3.5 to 1.3.7
+- Bump ava from v3.8.1 to v3.14.0
 
 ## [v1.2.0](https://github.com/onikienko/7zip-min/tree/v1.2.0) (2020-10-13)
 
