@@ -1,7 +1,0 @@
-Just text file for tests.
-=========================
-
-Duis aute irure dolor in reprehenderit in voluptate velit.
-Et harum quidem rerum facilis est et expedita distinctio. Architecto beatae vitae dicta sunt explicabo.
-Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam.
-Qui officia deserunt mollit anim id est laborum.

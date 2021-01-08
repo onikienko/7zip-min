@@ -1,90 +1,111 @@
 'use strict';
 
 let _7z = require('../index');
+const glob = require('glob');
 
 let test = require('ava');
 let fs = require('fs-extra-promise');
-let {join, basename, normalize} = require('path');
+let {join, normalize} = require('path');
 
-let srcFolder = join(__dirname, 'test-folder');
-let srcFile = join(srcFolder, 'test-file.txt');
-let archPath = join(__dirname, 'pack.7z');
-let destPath = join(__dirname, 'pack_dest');
+const SRC_DIR_NAME = 'testDir';
+const SRC_DIR_PATH = join(__dirname, SRC_DIR_NAME);
+const ARCH_PATH = join(__dirname, 'testDir.7z');
+const UNPACK_PATH = join(__dirname, 'unpackDir');
+const UNPACK_IN_CURRENT_PATH = join(process.cwd(), SRC_DIR_NAME);
 
-let srcFolder1 = join(__dirname, 'test-folder1');
-let srcFile1 = join(srcFolder1, 'test-file.txt');
-let archPath1 = join(__dirname, 'pack1.7z');
-let destPath1 = join(process.cwd(), 'test-folder1');
+const fsify = require('fsify')({
+    cwd: __dirname,
+});
+
+const folderStructure = [
+    {
+        type: fsify.DIRECTORY,
+        name: 'testDir',
+        contents: [
+            {
+                type: fsify.DIRECTORY,
+                name: 'dir1',
+                contents: [
+                    {
+                        type: fsify.FILE,
+                        name: 'testDir_dir1_file1.txt',
+                        contents: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus vel odio nunc.',
+                    },
+                    {
+                        type: fsify.FILE,
+                        name: 'testDir_dir1_file2.txt',
+                        contents: 'Lorem ipsum dolor sit amet.',
+                    },
+                ],
+            },
+            {
+                type: fsify.FILE,
+                name: 'testDir_file1.txt',
+                contents: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+            },
+            {
+                type: fsify.FILE,
+                name: 'testDir_file2.txt',
+            },
+        ],
+    },
+];
+
+test.before('create a folder', async t => {
+    await fsify(folderStructure);
+});
 
 test.serial('pack', async t => {
-    // compress
     await t2p(cb => {
-        _7z.pack(srcFolder, archPath, cb);
+        _7z.pack(SRC_DIR_PATH, ARCH_PATH, cb);
     });
-    // verify
-    let exists = await fs.existsAsync(archPath);
+    let exists = await fs.existsAsync(ARCH_PATH);
     t.true(exists);
 });
 
 test.serial('list', async t => {
-    // list
-    let content = (await t2p((cb) => {
-        _7z.list(archPath, cb);
+    let content = (await t2p(cb => {
+        _7z.list(ARCH_PATH, cb);
     }))[0];
-
-    // verify
-    let expectedName = ['test-folder', 'test-folder/test-file.txt'];
-    let expectedAttr = ['D', 'A'];
-    let expectedSize = ['0', fs.statSync(srcFile)['size'].toString()];
-    // let expectedCompr = ['0', '685'];
-
-    t.is(content[0].attr, expectedAttr[0]);
-    t.is(content[0].size, expectedSize[0]);
-    // t.is(content[0].compressed, expectedCompr[0]);
-    t.is(content[0].name, expectedName[0]);
-
-    t.is(content[1].attr, expectedAttr[1]);
-    t.is(content[1].size, expectedSize[1]);
-    // t.is(content[1].compressed, expectedCompr[1]);
-    t.is(normalize(content[1].name), normalize(expectedName[1]));
+    t.is(content.length, 6);
 });
 
 test.serial('unpack', async t => {
-    // decompress
     await t2p(cb => {
-        _7z.unpack(archPath, destPath, cb);
+        _7z.unpack(ARCH_PATH, UNPACK_PATH, cb);
     });
-    // verify
-    let files = await fs.readdirAsync(destPath);
-    let expected = [basename(srcFolder)];
-    t.deepEqual(files, expected);
+
+    const unpackSrcPath = join(UNPACK_PATH, SRC_DIR_NAME);
+    t.deepEqual(...await getFilesList(unpackSrcPath));
 });
 
-test.serial('unpack_to_current_path', async (t) => {
-    // compress
-    await fs.copyAsync(srcFolder, srcFolder1);
-    await t2p((cb) => {
-        _7z.pack(srcFolder1, archPath1, cb);
+test.serial('unpack to current path', async t => {
+    await t2p(cb => {
+        _7z.unpack(ARCH_PATH, cb);
     });
-    await fs.removeAsync(srcFolder1);
-    // decompress
-    await t2p((cb) => {
-        _7z.unpack(archPath1, cb);
-    });
-    // verify
-    let exists = await fs.existsAsync(destPath1);
-    t.true(exists);
-    let files = await fs.readdirAsync(destPath1);
-    let expected = [basename(srcFile1)];
-    t.deepEqual(files, expected);
+
+    t.deepEqual(...await getFilesList(UNPACK_IN_CURRENT_PATH));
 });
 
 test.after.always('cleanup', async t => {
-    await remove(destPath);
-    await remove(archPath);
-    await remove(destPath1);
-    await remove(archPath1);
+    await remove(SRC_DIR_PATH);
+    await remove(ARCH_PATH);
+    await remove(UNPACK_PATH);
+    await remove(UNPACK_IN_CURRENT_PATH);
 });
+
+// get list of paths for unpackSrcPath and for SRC_DIR_PATH to be compared
+async function getFilesList(unpackSrcPath) {
+    const unpackedFiles = (await t2p(cb => {
+        glob(unpackSrcPath + '/**/*', cb);
+    }))[0].map(p => normalize(p).replace(unpackSrcPath, ''));
+
+    const sourceFiles = (await t2p(cb => {
+        glob(SRC_DIR_PATH + '/**/*', cb);
+    }))[0].map(p => normalize(p).replace(SRC_DIR_PATH, ''));
+
+    return [unpackedFiles, sourceFiles];
+}
 
 // util: remove file if exists
 async function remove(file) {
