@@ -82,7 +82,8 @@ function onceify(fn) {
 
 function parseListOutput(str) {
     if (!str.length) return [];
-    const items = str.split(/^\n\r/m);
+    str = str.replace(/(\r\n|\n|\r)/gm, '\n');
+    const items = str.split(/^\s*$/m);
     const res = [];
     const LIST_MAP = {
         'Path': 'name',
@@ -101,7 +102,7 @@ function parseListOutput(str) {
     for (let item of items) {
         if (!item.length) continue;
         const obj = {};
-        const lines = item.split('\r\n');
+        const lines = item.split('\n');
         if (!lines.length) continue;
         for (let line of lines) {
             const data = line.split(' = ');
