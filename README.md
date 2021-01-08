@@ -43,7 +43,7 @@ _7z.unpack('path/to/archive.7z', 'where/to/unpack', err => {
     // done
 });
 
-// unpack into the current directory if no output directory specified
+// unpack into the current directory (process.cwd()) if no output directory specified
 _7z.unpack('path/to/archive.7z', err => {
     // done
 });
@@ -57,7 +57,8 @@ _7z.pack('path/to/dir/or/file', 'path/to/archive.7z', err => {
 _7z.list('path/to/archive.7z', (err, result) => {
     // in result you will have an array with info list for your archive
     // for each element in archive you will have:
-    // name, date, time, attr, size (in bytes), compressed (compressed size in bytes)
+    // name, date, time, attr, size (in bytes), compressed (compressed size in bytes), crc, method, encrtypted, block
+    // depeneds on archive type some values may be empty or missed
 });
 
 // cmd
