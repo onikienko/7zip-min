@@ -37,7 +37,7 @@ function pack(pathToSrc, pathToDest, cb) {
  * @param {function} cb - callback function. Will be called once list is done. If no errors, first parameter will contain `null`.
  */
 function list(pathToSrc, cb) {
-    run(path7za, ['l', pathToSrc], cb);
+    run(path7za, ['l', '-slt', '-ba', pathToSrc], cb);
 }
 
 /**
@@ -59,7 +59,7 @@ function run(bin, args, cb) {
     proc.on('exit', function (code) {
         let result = null;
         if (args[0] === 'l') {
-            result = parseListCmd(output);
+            result = parseListOutput(output);
         }
         cb(code ? new Error('Exited with code ' + code) : null, result);
     });
@@ -80,56 +80,48 @@ function onceify(fn) {
     };
 }
 
-function parseListCmd(output) {
-    const regex = /(?:(\d{4}-\d{2}-\d{2}) +(\d{2}:\d{2}:\d{2}) +((?:[D.]){1}(?:[R.]){1}(?:[H.]){1}(?:[S.]){1}(?:[A.]){1}) +(\d{1,12}) +(\d{1,12}) +(.+))\n*/g;
-    let result = [];
-    let m;
-    while ((m = regex.exec(output)) !== null) {
-        // This is necessary to avoid infinite loops with zero-width matches
-        if (m.index === regex.lastIndex) {
-            regex.lastIndex++;
-        }
+function parseListOutput(str) {
+    if (!str.length) return [];
+    const items = str.split(/^\n\r/m);
+    const res = [];
+    const LIST_MAP = {
+        'Path': 'name',
+        'Size': 'size',
+        'Packed Size': 'compressed',
+        'Attributes': 'attr',
+        'Modified': 'dateTime',
+        'CRC': 'crc',
+        'Method': 'method',
+        'Block': 'block',
+        'Encrypted': 'encrypted',
+    };
 
-        let date = '';
-        let time = '';
-        let attr = '';
-        let size = 0;
-        let compressed = 0;
-        let name = '';
+    if (!items.length) return [];
 
-        m.forEach((match, groupIndex) => {
-            switch (groupIndex) {
-                case 1:
-                    date = match;
-                    break;
-                case 2:
-                    time = match;
-                    break;
-                case 3:
-                    attr = match.replace(/\./g, '');
-                    break;
-                case 4:
-                    size = match;
-                    break;
-                case 5:
-                    compressed = match;
-                    break;
-                case 6:
-                    name = match;
-
-                    result.push({
-                        date: date,
-                        time: time,
-                        attr: attr,
-                        size: size,
-                        compressed: compressed,
-                        name: name,
-                    });
-                    break;
+    for (let item of items) {
+        if (!item.length) continue;
+        const obj = {};
+        const lines = item.split('\r\n');
+        if (!lines.length) continue;
+        for (let line of lines) {
+            const data = line.split(' = ');
+            if (data.length !== 2) continue;
+            const name = data[0].trim();
+            const val = data[1].trim();
+            if (LIST_MAP[name]) {
+                if (LIST_MAP[name] === 'dateTime') {
+                    const dtArr = val.split(' ');
+                    if (dtArr.length !== 2) continue;
+                    obj['date'] = dtArr[0];
+                    obj['time'] = dtArr[1];
+                } else {
+                    obj[LIST_MAP[name]] = val;
+                }
             }
-        });
+        }
+        if (Object.keys(obj).length) res.push(obj);
     }
-    return result;
+    return res;
 }
 
 exports.unpack = unpack;
