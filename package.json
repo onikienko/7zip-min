@@ -34,7 +34,7 @@
     "7zip-bin": "^5.0.3"
   },
   "devDependencies": {
-    "ava": "^3.14.0",
+    "ava": "^3.15.0",
     "fs-extra-promise": "^1.0.1",
     "fsify": "^4.0.1",
     "glob": "^7.1.6"
