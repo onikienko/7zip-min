@@ -1,11 +1,11 @@
 'use strict';
 
-let _7z = require('../index');
+const _7z = require('../index');
 const glob = require('glob');
 
-let test = require('ava');
-let fs = require('fs-extra-promise');
-let {join, normalize} = require('path');
+const test = require('ava');
+const fs = require('fs-extra-promise');
+const {join, normalize} = require('path');
 
 const SRC_DIR_NAME = 'testDir';
 const SRC_DIR_PATH = join(__dirname, SRC_DIR_NAME);
@@ -20,7 +20,7 @@ const fsify = require('fsify')({
 const folderStructure = [
     {
         type: fsify.DIRECTORY,
-        name: 'testDir',
+        name: SRC_DIR_NAME,
         contents: [
             {
                 type: fsify.DIRECTORY,
@@ -45,7 +45,7 @@ const folderStructure = [
             },
             {
                 type: fsify.FILE,
-                name: 'testDir_file2.txt',
+                name: 'testDir_file2_empty.txt',
             },
         ],
     },
@@ -59,12 +59,12 @@ test.serial('pack', async t => {
     await t2p(cb => {
         _7z.pack(SRC_DIR_PATH, ARCH_PATH, cb);
     });
-    let exists = await fs.existsAsync(ARCH_PATH);
+    const exists = await fs.existsAsync(ARCH_PATH);
     t.true(exists);
 });
 
 test.serial('list', async t => {
-    let content = (await t2p(cb => {
+    const content = (await t2p(cb => {
         _7z.list(ARCH_PATH, cb);
     }))[0];
     t.is(content.length, 6);
@@ -85,6 +85,20 @@ test.serial('unpack to current path', async t => {
     });
 
     t.deepEqual(...await getFilesList(UNPACK_IN_CURRENT_PATH));
+});
+
+test.serial('pack with "cmd"', async t => {
+    // remove archive created in previous tests
+    await remove(ARCH_PATH);
+    // check that archive does not exist
+    t.false(await fs.existsAsync(ARCH_PATH));
+
+    await t2p(cb => {
+        _7z.cmd(['a', ARCH_PATH, SRC_DIR_PATH], cb);
+    });
+
+    const exists = await fs.existsAsync(ARCH_PATH);
+    t.true(exists);
 });
 
 test.after.always('cleanup', async t => {
