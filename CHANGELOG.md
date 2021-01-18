@@ -1,4 +1,13 @@
 # Changelog
+## [v1.3.0](https://github.com/onikienko/7zip-min/tree/v1.3.0) (2021-01-18)
+
+- Fix `list` command for nested `7zip` archives
+- Add new props for `list` output (crc, method, block, encrypted). Props may depend on archive type and platform.
+- Update README.md
+- (dev) Bump ava from v3.14.0 to v3.15.0
+- (dev) Tests with nested folders structure
+- (dev) Test for `cmd` command
+
 ## [v1.2.1](https://github.com/onikienko/7zip-min/tree/v1.2.1) (2020-12-23)
 
 - [Security] Bump ini from 1.3.5 to 1.3.7
