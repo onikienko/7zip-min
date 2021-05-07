@@ -1,4 +1,13 @@
 # Changelog
+## v1.3.1
+
+- Bump 7zip-bin from 5.0.3 to 5.1.1
+- Bump fsify from 4.0.1 to 4.0.2
+- [Security] Bump lodash from 4.17.20 to 4.17.21
+- Bump glob from 7.1.6 to 7.1.7
+- Update package.json
+- [dev] Upgrade to GitHub-native Dependabot
+
 ## [v1.3.0](https://github.com/onikienko/7zip-min/tree/v1.3.0) (2021-01-18)
 
 - Fix `list` command for nested `7zip` archives
