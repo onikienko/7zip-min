@@ -1,4 +1,9 @@
 # Changelog
+
+## v1.3.2
+
+- Bump hosted-git-info from 2.8.8 to 2.8.9
+
 ## v1.3.1
 
 - Bump 7zip-bin from 5.0.3 to 5.1.1
