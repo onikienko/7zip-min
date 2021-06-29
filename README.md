@@ -1,7 +1,7 @@
 7zip-min
 ========
 
-Minimal cross-platform pack/unpack (and any command) with **7-zip**.   
+Minimal cross-platform pack/unpack (and any command) with **7-zip** for Node.js.   
 It does not require **7zip** to be installed in your system. 
 This package includes standalone **7za** version of **7-Zip** (uses precompiled binaries from [7zip-bin](https://github.com/develar/7zip-bin) package).
 
