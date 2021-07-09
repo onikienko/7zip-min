@@ -22,6 +22,19 @@ function unpack(pathToPack, destPathOrCb, cb) {
 }
 
 /**
+ * Gets an array containing file data.
+ * @param {string} pathToPack - path to archive you want to unpack.
+ * @param {{(string|string[])}} files - Wildcard supported string for files to match and extract or file path.
+ * @param {function} cb - callback function. Will be called once command is done. If no errors, first parameter will contain `null`, second parameter will contain file data as a continuos block.
+ * NOTE : When returning multiple files you can use _7z.list(...) first to determine file lengths.
+ *        Unpacking large files will work, but is considered unsupported at this time.
+ */
+function unpackStdout(pathToPack, files, cb) {
+  files = Array.isArray(files) ? files : [files]
+  run(path7za, ['x', '-so', pathToPack, ...files], cb);
+}
+
+/**
  * Pack file or folder to archive.
  * @param {string} pathToSrc - path to file or folder you want to compress.
  * @param {string} pathToDest - path to archive you want to create.
@@ -125,6 +138,7 @@ function parseListOutput(str) {
 }
 
 exports.unpack = unpack;
+exports.unpackStdout = unpackStdout;
 exports.pack = pack;
 exports.list = list;
 exports.cmd = cmd;
