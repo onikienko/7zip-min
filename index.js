@@ -52,19 +52,18 @@ function cmd(paramsArr, cb) {
 function run(bin, args, cb) {
     cb = onceify(cb);
     const proc = spawn(bin, args);
-    let output = '';
-    proc.on('error', function (err) {
-        cb(err);
-    });
-    proc.on('exit', function (code) {
+    let output = []
+    proc.on('close', function (code) {
         let result = null;
         if (args[0] === 'l') {
-            result = parseListOutput(output);
+            result = parseListOutput(Buffer.from(output).toString());
+        } else if (args[0] === 'x') {
+          result = output
         }
         cb(code ? new Error('Exited with code ' + code) : null, result);
     });
     proc.stdout.on('data', (chunk) => {
-        output += chunk.toString();
+        output.push(...chunk)
     });
 }
 
