@@ -79,6 +79,24 @@ test.serial('unpack', async t => {
     t.deepEqual(...await getFilesList(unpackSrcPath));
 });
 
+test.serial('unpackStdout', async t => {
+  let testPath = `${SRC_DIR_NAME}/dir1/testDir_dir1_file1.txt`
+  let test = folderStructure[0].contents[0].contents[0].contents
+  let content = (await t2p(cb => {
+      _7z.unpackStdout(ARCH_PATH, testPath, cb);
+  }))[0];
+  t.assert(Buffer.from(content).toString() == test)
+
+  testPath = [`${SRC_DIR_NAME}/testDir_file1.txt`, '*/dir1/*.txt']
+  test = folderStructure[0].contents[0].contents[0].contents
+          + folderStructure[0].contents[0].contents[1].contents
+          + folderStructure[0].contents[1].contents
+  content = (await t2p(cb => {
+    _7z.unpackStdout(ARCH_PATH, testPath, cb);
+  }))[0];
+  t.assert(Buffer.from(content).toString() == test)
+});
+
 test.serial('unpack to current path', async t => {
     await t2p(cb => {
         _7z.unpack(ARCH_PATH, cb);
