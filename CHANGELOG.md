@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.3.3
+
+- Bump path-parse from 1.0.6 to 1.0.7
+- Bump normalize-url from 4.5.0 to 4.5.1
+- Bump glob-parent from 5.1.1 to 5.1.2
+
 ## v1.3.2
 
 - Bump hosted-git-info from 2.8.8 to 2.8.9
