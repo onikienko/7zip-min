@@ -61,7 +61,7 @@ function run(bin, args, cb) {
         if (args[0] === 'l') {
             result = parseListOutput(output);
         }
-        cb(code ? new Error('Exited with code ' + code) : null, result);
+        cb(code ? new Error(`${output}\n\n7-zip exited with code ${code}`) : null, result);
     });
     proc.stdout.on('data', (chunk) => {
         output += chunk.toString();
