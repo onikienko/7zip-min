@@ -66,6 +66,9 @@ function run(bin, args, cb) {
     proc.stdout.on('data', (chunk) => {
         output += chunk.toString();
     });
+    proc.stderr.on('data', (chunk) => {
+        output += chunk.toString();
+    });
 }
 
 // http://stackoverflow.com/questions/30234908/javascript-v8-optimisation-and-leaking-arguments
