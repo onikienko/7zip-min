@@ -51,7 +51,7 @@ function cmd(paramsArr, cb) {
 
 function run(bin, args, cb) {
     cb = onceify(cb);
-    const proc = spawn(bin, args);
+    const proc = spawn(bin, args, { windowsHide: true });
     let output = '';
     proc.on('error', function (err) {
         cb(err);
