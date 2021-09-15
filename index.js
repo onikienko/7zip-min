@@ -51,7 +51,8 @@ function cmd(paramsArr, cb) {
 
 function run(bin, args, cb) {
     cb = onceify(cb);
-    const proc = spawn(bin, args);
+    const runError = new Error(); // get full stack trace
+    const proc = spawn(bin, args, {windowsHide: true});
     let output = '';
     proc.on('error', function (err) {
         cb(err);
@@ -61,9 +62,15 @@ function run(bin, args, cb) {
         if (args[0] === 'l') {
             result = parseListOutput(output);
         }
-        cb(code ? new Error('Exited with code ' + code) : null, result);
+        if (code) {
+            runError.message = `7-zip exited with code ${code}\n${output}`;
+        }
+        cb(code ? runError : null, result);
     });
     proc.stdout.on('data', (chunk) => {
+        output += chunk.toString();
+    });
+    proc.stderr.on('data', (chunk) => {
         output += chunk.toString();
     });
 }

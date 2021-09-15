@@ -101,6 +101,18 @@ test.serial('pack with "cmd"', async t => {
     t.true(exists);
 });
 
+test.serial('pack path that does not exist', async t => {
+    const wrongPath = join(__dirname, 'noPath');
+    const error = await t.throwsAsync(async () => {
+        await t2p(cb => {
+            _7z.pack(join(wrongPath), ARCH_PATH, cb);
+        });
+    });
+    // error output should contain wrong path
+    const hasWrongPathMentioning = error.message.indexOf(wrongPath) !== -1;
+    t.true(hasWrongPathMentioning);
+});
+
 test.after.always('cleanup', async t => {
     await remove(SRC_DIR_PATH);
     await remove(ARCH_PATH);
