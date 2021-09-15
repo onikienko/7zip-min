@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.4.0
+
+- add 7z output to error object (you will have more ideas on why 7z failed)
+- add spawn option `{windowsHide: true}` (it will hide the subprocess console window that would normally be created on Windows systems.)
+
+Thanks [@milahu](https://github.com/milahu) for that features.
+
 ## v1.3.3
 
 - Bump path-parse from 1.0.6 to 1.0.7
