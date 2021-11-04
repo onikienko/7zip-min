@@ -4,7 +4,7 @@ const _7z = require('../index');
 const glob = require('glob');
 
 const test = require('ava');
-const fs = require('fs-extra-promise');
+const fs = require('fs-extra');
 const {join, normalize} = require('path');
 
 const SRC_DIR_NAME = 'testDir';
@@ -59,7 +59,7 @@ test.serial('pack', async t => {
     await t2p(cb => {
         _7z.pack(SRC_DIR_PATH, ARCH_PATH, cb);
     });
-    const exists = await fs.existsAsync(ARCH_PATH);
+    const exists = await fs.pathExists(ARCH_PATH);
     t.true(exists);
 });
 
@@ -91,13 +91,13 @@ test.serial('pack with "cmd"', async t => {
     // remove archive created in previous tests
     await remove(ARCH_PATH);
     // check that archive does not exist
-    t.false(await fs.existsAsync(ARCH_PATH));
+    t.false(await fs.pathExists(ARCH_PATH));
 
     await t2p(cb => {
         _7z.cmd(['a', ARCH_PATH, SRC_DIR_PATH], cb);
     });
 
-    const exists = await fs.existsAsync(ARCH_PATH);
+    const exists = await fs.pathExists(ARCH_PATH);
     t.true(exists);
 });
 
@@ -135,8 +135,8 @@ async function getFilesList(unpackSrcPath) {
 
 // util: remove file if exists
 async function remove(file) {
-    if (await fs.existsAsync(file)) {
-        await fs.removeAsync(file);
+    if (await fs.pathExists(file)) {
+        await fs.remove(file);
     }
 }
 
