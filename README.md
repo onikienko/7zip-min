@@ -17,11 +17,13 @@ Supporting platforms
 
 - win (32/64)
 - mac
+  - arm64 (Apple Silicon)
+  - x64 
 - linux
-    - arm
-    - arm64
-    - ia32
-    - x64
+  - arm
+  - arm64
+  - ia32
+  - x64
 
 To get more details check [7zip-bin](https://github.com/develar/7zip-bin) package repo. 
 
