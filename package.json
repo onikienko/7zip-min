@@ -29,7 +29,7 @@
   "bugs": {
     "url": "https://github.com/onikienko/7zip-min/issues"
   },
-  "homepage": "https://github.com/onikienko/7zip-min",
+  "homepage": "https://github.com/onikienko/7zip-min#readme",
   "dependencies": {
     "7zip-bin": "^5.1.1"
   },
