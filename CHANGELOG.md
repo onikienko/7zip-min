@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.4.1
+
+- use fs-extra for tests instead of obsolete fs-extra-promise package
+- homepage points to README https://github.com/onikienko/7zip-min#readme
+- bump glob from 7.1.7 to 7.2.0
+
 ## v1.4.0
 
 - add 7z output to error object (you will have more ideas on why 7z failed)

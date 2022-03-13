@@ -1,9 +1,11 @@
 {
   "name": "7zip-min",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Standalone cross-platform zip/unzip with 7za",
   "main": "index.js",
   "scripts": {
+    "release": "np --no-yarn --no-cleanup --no-2fa",
+    "preview": "np --no-yarn --no-cleanup --no-2fa --preview",
     "test": "ava"
   },
   "repository": {
@@ -29,14 +31,15 @@
   "bugs": {
     "url": "https://github.com/onikienko/7zip-min/issues"
   },
-  "homepage": "https://github.com/onikienko/7zip-min",
+  "homepage": "https://github.com/onikienko/7zip-min#readme",
   "dependencies": {
     "7zip-bin": "^5.1.1"
   },
   "devDependencies": {
-    "ava": "^3.15.0",
+    "ava": "^4.0.1",
     "fs-extra": "^10.0.0",
-    "fsify": "^4.0.2",
-    "glob": "^7.1.7"
+    "fsify": "^5.0.0",
+    "glob": "^7.2.0",
+    "np": "^7.6.0"
   }
 }
