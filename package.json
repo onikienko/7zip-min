@@ -4,8 +4,8 @@
   "description": "Standalone cross-platform zip/unzip with 7za",
   "main": "index.js",
   "scripts": {
-    "release": "np --no-yarn --no-cleanup --no-2fa",
-    "preview": "np --no-yarn --no-cleanup --no-2fa --preview",
+    "release": "np --no-yarn --no-cleanup",
+    "preview": "np --no-yarn --no-cleanup --preview",
     "test": "ava"
   },
   "repository": {
