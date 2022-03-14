@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.4.2
+
+- bump dependencies
+- update README.md
+- use 2fa for npm releases
+
 ## v1.4.1
 
 - use fs-extra for tests instead of obsolete fs-extra-promise package
