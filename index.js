@@ -1,7 +1,29 @@
 'use strict';
 
+const fs = require("fs");
+const path = require("path");
+const os = require("os");
+const exitHook = require("async-exit-hook");
 const spawn = require('child_process').spawn;
 const path7za = require('7zip-bin').path7za;
+let binary7za = '';
+if (process.platform === "darwin") {
+    binary7za = "7za";
+}
+else if (process.platform === "win32") {
+    binary7za = "7za.exe";
+}
+else {
+    binary7za = "7za";
+}
+const tempFolder7za = fs.mkdtempSync(path.join(os.tmpdir(), '7za-'));
+const tempPath7za = path.join(tempFolder7za, binary7za);
+fs.copyFileSync(path7za, tempPath7za);
+exitHook(() => {
+    if (fs.existsSync(tempFolder7za)) {
+        fs.rmdirSync(tempFolder7za, { recursive: true , force: true });
+    }
+});
 
 /**
  * Unpack archive.
@@ -15,9 +37,9 @@ const path7za = require('7zip-bin').path7za;
 function unpack(pathToPack, destPathOrCb, cb) {
     if (typeof destPathOrCb === 'function' && cb === undefined) {
         cb = destPathOrCb;
-        run(path7za, ['x', pathToPack, '-y'], cb);
+        run(tempPath7za, ['x', pathToPack, '-y'], cb);
     } else {
-        run(path7za, ['x', pathToPack, '-y', '-o' + destPathOrCb], cb);
+        run(tempPath7za, ['x', pathToPack, '-y', '-o' + destPathOrCb], cb);
     }
 }
 
@@ -28,7 +50,7 @@ function unpack(pathToPack, destPathOrCb, cb) {
  * @param {function} cb - callback function. Will be called once pack is done. If no errors, first parameter will contain `null`.
  */
 function pack(pathToSrc, pathToDest, cb) {
-    run(path7za, ['a', pathToDest, pathToSrc], cb);
+    run(tempPath7za, ['a', pathToDest, pathToSrc], cb);
 }
 
 /**
@@ -37,7 +59,7 @@ function pack(pathToSrc, pathToDest, cb) {
  * @param {function} cb - callback function. Will be called once list is done. If no errors, first parameter will contain `null`.
  */
 function list(pathToSrc, cb) {
-    run(path7za, ['l', '-slt', '-ba', pathToSrc], cb);
+    run(tempPath7za, ['l', '-slt', '-ba', pathToSrc], cb);
 }
 
 /**
@@ -46,7 +68,7 @@ function list(pathToSrc, cb) {
  * @param {function} cb - callback function. Will be called once command is done. If no errors, first parameter will contain `null`. If no output, second parameter will be `null`.
  */
 function cmd(paramsArr, cb) {
-    run(path7za, paramsArr, cb);
+    run(tempPath7za, paramsArr, cb);
 }
 
 function run(bin, args, cb) {

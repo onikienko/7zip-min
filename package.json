@@ -33,7 +33,8 @@
   },
   "homepage": "https://github.com/onikienko/7zip-min#readme",
   "dependencies": {
-    "7zip-bin": "5.1.1"
+    "7zip-bin": "5.1.1",
+    "async-exit-hook": "^2.0.1"
   },
   "devDependencies": {
     "ava": "^4.0.1",
