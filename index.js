@@ -29,7 +29,7 @@ function prepare7za() {
         }
     }
 }
-prepare7za()
+prepare7za();
 
 /**
  * Unpack archive.
