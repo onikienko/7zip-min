@@ -3,27 +3,33 @@
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
-const exitHook = require("async-exit-hook");
 const spawn = require('child_process').spawn;
 const path7za = require('7zip-bin').path7za;
-let binary7za = '';
-if (process.platform === "darwin") {
-    binary7za = "7za";
-}
-else if (process.platform === "win32") {
-    binary7za = "7za.exe";
-}
-else {
-    binary7za = "7za";
-}
-const tempFolder7za = fs.mkdtempSync(path.join(os.tmpdir(), '7za-'));
-const tempPath7za = path.join(tempFolder7za, binary7za);
-fs.copyFileSync(path7za, tempPath7za);
-exitHook(() => {
-    if (fs.existsSync(tempFolder7za)) {
-        fs.rmdirSync(tempFolder7za, { recursive: true , force: true });
+let tempPath7za = path7za;
+function prepare7za() {
+    if (process.pkg) {
+        if (process.env.USE_SYSTEM_7ZA !== "true") {
+            const exitHook = require("async-exit-hook");
+            let binary7za = '';
+            if (process.platform === "darwin") {
+                binary7za = "7za";
+            } else if (process.platform === "win32") {
+                binary7za = "7za.exe";
+            } else {
+                binary7za = "7za";
+            }
+            const tempFolder7za = fs.mkdtempSync(path.join(os.tmpdir(), '7za-'));
+            tempPath7za = path.join(tempFolder7za, binary7za);
+            fs.copyFileSync(path7za, tempPath7za);
+            exitHook(() => {
+                if (fs.existsSync(tempFolder7za)) {
+                    fs.rmdirSync(tempFolder7za, {recursive: true, force: true});
+                }
+            });
+        }
     }
-});
+}
+prepare7za()
 
 /**
  * Unpack archive.
