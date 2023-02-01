@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.4.4
+
+- fix error with 'list' command if file contains " = " in the name
+- bump dependencies
+- add test to check filename with " = " for list command
+
 ## v1.4.2
 
 - bump dependencies
