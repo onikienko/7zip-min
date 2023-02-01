@@ -28,7 +28,7 @@ const folderStructure = [
                 contents: [
                     {
                         type: fsify.FILE,
-                        name: 'testDir_dir1_file1.txt',
+                        name: 'Some = File = Name.txt',
                         contents: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus vel odio nunc.',
                     },
                     {
@@ -68,6 +68,9 @@ test.serial('list', async t => {
         _7z.list(ARCH_PATH, cb);
     }))[0];
     t.is(content.length, 6);
+    content.forEach(el => {
+        t.true(Boolean(el.name));
+    });
 });
 
 test.serial('unpack', async t => {
