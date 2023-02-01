@@ -112,8 +112,9 @@ function parseListOutput(str) {
         const lines = item.split('\n');
         if (!lines.length) continue;
         for (let line of lines) {
-            const data = line.split(' = ');
-            if (data.length !== 2) continue;
+            // Split by first " = " occurrence. This will also add an empty 3rd elm to the array. Just ignore it
+            const data = line.split(/ = (.*)/s);
+            if (data.length !== 3) continue;
             const name = data[0].trim();
             const val = data[1].trim();
             if (LIST_MAP[name]) {
