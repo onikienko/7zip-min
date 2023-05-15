@@ -1,7 +1,7 @@
 7zip-min
 ========
 
-### Russian invaders must die. Glory to Ukraine. 
+### Russian invaders must die. Glory to Ukraine. 🇺🇦
 
 Minimal cross-platform pack/unpack (and any command) with **7-zip** for Node.js.   
 It does not require **7zip** to be installed in your system. 
