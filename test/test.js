@@ -73,6 +73,15 @@ test.serial('list', async t => {
     });
 });
 
+test.serial('cmd t', async t => {
+    const test = (await t2p(cb => {
+        _7z.cmd(['t', ARCH_PATH], cb);
+    }))[0];
+
+    t.is(Object.keys(test).length, 7);
+    t.is(test.type, '7z');
+});
+
 test.serial('unpack', async t => {
     await t2p(cb => {
         _7z.unpack(ARCH_PATH, UNPACK_PATH, cb);
