@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.4.5
+
+- build: update .gitignore
+- docs: update README.md
+
 ## v1.4.4
 
 - fix error with 'list' command if file contains " = " in the name
