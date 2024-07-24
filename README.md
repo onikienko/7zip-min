@@ -1,8 +1,6 @@
 7zip-min
 ========
 
-### Russian invaders must die. Glory to Ukraine. 🇺🇦
-
 Minimal cross-platform pack/unpack (and any command) with **7-zip** for Node.js.   
 It does not require **7zip** to be installed in your system. 
 This package includes standalone **7za** version of **7-Zip** (uses precompiled binaries from [7zip-bin](https://github.com/develar/7zip-bin) package).
@@ -11,7 +9,7 @@ This package includes standalone **7za** version of **7-Zip** (uses precompiled 
 Supporting archive formats
 --------------------------
 
-According to [Command Line Version User's Guide](https://sevenzip.osdn.jp/chm/cmdline/index.htm) page, 7za supports only **7z**, **lzma**, **cab**, **zip**, **gzip**, **bzip2**, **Z** and **tar** formats. 
+According to [Command Line Version User's Guide](https://web.mit.edu/outland/arch/i386_rhel4/build/p7zip-current/DOCS/MANUAL/) page, 7za supports only **7z**, **lzma**, **cab**, **zip**, **gzip**, **bzip2**, **Z** and **tar** formats. 
 
 
 Supporting platforms
@@ -37,9 +35,9 @@ You may use `pack` and `unpack` methods for simple packing/unpacking.
 
 You can also use `list` to get an array with the file content properties (includes date, time, attr, size, compressed and name)
 
-Or use `cmd` to run 7za with custom parameters (see [Command Line Version User's Guide](https://sevenzip.osdn.jp/chm/cmdline/index.htm))
+Or use `cmd` to run 7za with custom parameters (see [Command Line Version User's Guide](https://web.mit.edu/outland/arch/i386_rhel4/build/p7zip-current/DOCS/MANUAL/))
 
-```js
+```javaScript
 const _7z = require('7zip-min');
 
 // unpack
@@ -60,13 +58,13 @@ _7z.pack('path/to/dir/or/file', 'path/to/archive.7z', err => {
 // list
 _7z.list('path/to/archive.7z', (err, result) => {
     // in result you will have an array with info list for your archive
-    // for each element in archive you will have:
-    // name, date, time, attr, size (in bytes), compressed (compressed size in bytes), crc, method, encrtypted, block
-    // depeneds on archive type some values may be empty or missed
+    // For each element in the archive you will have:
+    // name, date, time, attr, size (in bytes), compressed (compressed size in bytes), crc, method, encrypted, block
+    // Depending on the archive type some values may be empty or missed
 });
 
 // cmd
-// in the first parameter you have to provide array of parameters
+// in the first parameter you have to provide an array of parameters
 // check 7z's Command Line Version User's Guide - https://sevenzip.osdn.jp/chm/cmdline/index.htm
 // the bellow command is equal to `7za a path/to/archive.7z path/to/dir/or/file` and will add `path/to/dir/or/file` to `path/to/archive.7z` archive
 _7z.cmd(['a', 'path/to/archive.7z', 'path/to/dir/or/file'], err => {
