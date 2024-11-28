@@ -61,6 +61,8 @@ function run(bin, args, cb) {
         let result = null;
         if (args[0] === 'l') {
             result = parseListOutput(output);
+        } else if ( args[0] === 't') {
+            result = parseListOutput(output)[0];
         }
         if (code) {
             runError.message = `7-zip exited with code ${code}\n${output}`;
@@ -102,6 +104,11 @@ function parseListOutput(str) {
         'Method': 'method',
         'Block': 'block',
         'Encrypted': 'encrypted',
+        'Type': 'type',
+        'Physical Size': 'physicalSize',
+        'Headers Size': 'headersSize',
+        'Solid': 'solid',
+        'Blocks': 'blocks',
     };
 
     if (!items.length) return [];
