@@ -1,5 +1,6 @@
 'use strict';
 
+const promisify = require('util').promisify;
 const spawn = require('child_process').spawn;
 const path7za = require('7zip-bin').path7za;
 
@@ -133,7 +134,18 @@ function parseListOutput(str) {
     return res;
 }
 
-exports.unpack = unpack;
-exports.pack = pack;
-exports.list = list;
-exports.cmd = cmd;
+function universalCall(fn) {
+    return function (...args) {
+        const cb = args[args.length - 1];
+        if (typeof cb === 'function') {
+            return fn.apply(this, args);
+        } else {
+            return promisify(fn).apply(this, args);
+        }
+    };
+}
+
+exports.unpack = universalCall(unpack);
+exports.pack = universalCall(pack);
+exports.list = universalCall(list);
+exports.cmd = universalCall(cmd);
