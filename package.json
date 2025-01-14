@@ -24,7 +24,9 @@
     "zip",
     "gzip",
     "bzip2",
-    "tar"
+    "tar",
+    "pack",
+    "unpack"
   ],
   "author": "Mykhailo Onikiienko <michael.onikienko@gmail.com>",
   "license": "MIT",
