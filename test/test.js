@@ -63,10 +63,26 @@ test.serial('pack', async t => {
     t.true(exists);
 });
 
+test.serial('pack (async)', async t => {
+    await remove(ARCH_PATH);
+    t.false(await fs.pathExists(ARCH_PATH));
+    await _7z.pack(SRC_DIR_PATH, ARCH_PATH);
+    const exists = await fs.pathExists(ARCH_PATH);
+    t.true(exists);
+});
+
 test.serial('list', async t => {
     const content = (await t2p(cb => {
         _7z.list(ARCH_PATH, cb);
     }))[0];
+    t.is(content.length, 6);
+    content.forEach(el => {
+        t.true(Boolean(el.name));
+    });
+});
+
+test.serial('list (async)', async t => {
+    const content = await _7z.list(ARCH_PATH);
     t.is(content.length, 6);
     content.forEach(el => {
         t.true(Boolean(el.name));
@@ -82,7 +98,15 @@ test.serial('unpack', async t => {
     t.deepEqual(...await getFilesList(unpackSrcPath));
 });
 
-test.serial('unpack to current path', async t => {
+test.serial('unpack (async)', async t => {
+    await remove(UNPACK_PATH);
+    t.false(await fs.pathExists(UNPACK_PATH));
+    await _7z.unpack(ARCH_PATH, UNPACK_PATH);
+    const unpackSrcPath = join(UNPACK_PATH, SRC_DIR_NAME);
+    t.deepEqual(...await getFilesList(unpackSrcPath));
+});
+
+test.serial('unpack to the current path', async t => {
     await t2p(cb => {
         _7z.unpack(ARCH_PATH, cb);
     });
@@ -90,16 +114,31 @@ test.serial('unpack to current path', async t => {
     t.deepEqual(...await getFilesList(UNPACK_IN_CURRENT_PATH));
 });
 
+test.serial('unpack to the current path (async)', async t => {
+    await remove(UNPACK_IN_CURRENT_PATH);
+    t.false(await fs.pathExists(UNPACK_IN_CURRENT_PATH));
+    await _7z.unpack(ARCH_PATH);
+    t.deepEqual(...await getFilesList(UNPACK_IN_CURRENT_PATH));
+});
+
 test.serial('pack with "cmd"', async t => {
-    // remove archive created in previous tests
+    // remove the archive created in previous tests
     await remove(ARCH_PATH);
-    // check that archive does not exist
+    // check that the archive does not exist
     t.false(await fs.pathExists(ARCH_PATH));
 
     await t2p(cb => {
         _7z.cmd(['a', ARCH_PATH, SRC_DIR_PATH], cb);
     });
 
+    const exists = await fs.pathExists(ARCH_PATH);
+    t.true(exists);
+});
+
+test.serial('pack with "cmd" (async)', async t => {
+    await remove(ARCH_PATH);
+    t.false(await fs.pathExists(ARCH_PATH));
+    await _7z.cmd(['a', ARCH_PATH, SRC_DIR_PATH]);
     const exists = await fs.pathExists(ARCH_PATH);
     t.true(exists);
 });
@@ -111,7 +150,16 @@ test.serial('pack path that does not exist', async t => {
             _7z.pack(join(wrongPath), ARCH_PATH, cb);
         });
     });
-    // error output should contain wrong path
+    // the error output should contain a wrong path
+    const hasWrongPathMentioning = error.message.indexOf(wrongPath) !== -1;
+    t.true(hasWrongPathMentioning);
+});
+
+test.serial('pack path that does not exist (async)', async t => {
+    const wrongPath = join(__dirname, 'noPathAsync');
+    const error = await t.throwsAsync(async () => {
+        await _7z.pack(join(wrongPath), ARCH_PATH);
+    });
     const hasWrongPathMentioning = error.message.indexOf(wrongPath) !== -1;
     t.true(hasWrongPathMentioning);
 });
@@ -123,7 +171,7 @@ test.after.always('cleanup', async t => {
     await remove(UNPACK_IN_CURRENT_PATH);
 });
 
-// get list of paths for unpackSrcPath and for SRC_DIR_PATH to be compared
+// get a list of paths for unpackSrcPath and for SRC_DIR_PATH to be compared
 async function getFilesList(unpackSrcPath) {
     const unpackedFiles = (await t2p(cb => {
         glob(unpackSrcPath + '/**/*', cb);
