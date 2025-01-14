@@ -4,6 +4,14 @@ const promisify = require('util').promisify;
 const spawn = require('child_process').spawn;
 const path7za = require('7zip-bin').path7za;
 
+// Handling `path7za` in case of usage inside electron app
+// More details -
+// https://github.com/sindresorhus/electron-util/blob/6c37341e43cdaa890e9145d6065f14b864c8befc/source/node/index.ts#L38
+const isUsingAsar = 'electron' in process.versions
+    && process.argv.length > 1
+    && process.argv[1]?.includes('app.asar');
+const BIN = isUsingAsar ? path7za.replace('app.asar', 'app.asar.unpacked') : path7za;
+
 /**
  * Unpack archive.
  * @param {string} pathToPack - path to archive you want to unpack.
@@ -16,9 +24,9 @@ const path7za = require('7zip-bin').path7za;
 function unpack(pathToPack, destPathOrCb, cb) {
     if (typeof destPathOrCb === 'function' && cb === undefined) {
         cb = destPathOrCb;
-        run(path7za, ['x', pathToPack, '-y'], cb);
+        run(['x', pathToPack, '-y'], cb);
     } else {
-        run(path7za, ['x', pathToPack, '-y', '-o' + destPathOrCb], cb);
+        run(['x', pathToPack, '-y', '-o' + destPathOrCb], cb);
     }
 }
 
@@ -29,7 +37,7 @@ function unpack(pathToPack, destPathOrCb, cb) {
  * @param {function} cb - callback function. Will be called once pack is done. If no errors, first parameter will contain `null`.
  */
 function pack(pathToSrc, pathToDest, cb) {
-    run(path7za, ['a', pathToDest, pathToSrc], cb);
+    run(['a', pathToDest, pathToSrc], cb);
 }
 
 /**
@@ -38,7 +46,7 @@ function pack(pathToSrc, pathToDest, cb) {
  * @param {function} cb - callback function. Will be called once list is done. If no errors, first parameter will contain `null`.
  */
 function list(pathToSrc, cb) {
-    run(path7za, ['l', '-slt', '-ba', pathToSrc], cb);
+    run(['l', '-slt', '-ba', pathToSrc], cb);
 }
 
 /**
@@ -47,13 +55,13 @@ function list(pathToSrc, cb) {
  * @param {function} cb - callback function. Will be called once command is done. If no errors, first parameter will contain `null`. If no output, second parameter will be `null`.
  */
 function cmd(paramsArr, cb) {
-    run(path7za, paramsArr, cb);
+    run(paramsArr, cb);
 }
 
-function run(bin, args, cb) {
+function run(args, cb) {
     cb = onceify(cb);
     const runError = new Error(); // get full stack trace
-    const proc = spawn(bin, args, {windowsHide: true});
+    const proc = spawn(BIN, args, {windowsHide: true});
     let output = '';
     proc.on('error', function (err) {
         cb(err);
