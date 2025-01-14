@@ -1,7 +1,7 @@
 'use strict';
 
 const _7z = require('../index');
-const glob = require('glob');
+const {glob} = require('glob');
 
 const test = require('ava');
 const fs = require('fs-extra');
@@ -173,13 +173,11 @@ test.after.always('cleanup', async t => {
 
 // get a list of paths for unpackSrcPath and for SRC_DIR_PATH to be compared
 async function getFilesList(unpackSrcPath) {
-    const unpackedFiles = (await t2p(cb => {
-        glob(unpackSrcPath + '/**/*', cb);
-    }))[0].map(p => normalize(p).replace(unpackSrcPath, ''));
+    const unpackedFiles = (await glob(unpackSrcPath + '/**/*'))
+        .map(p => normalize(p).replace(unpackSrcPath, ''));
 
-    const sourceFiles = (await t2p(cb => {
-        glob(SRC_DIR_PATH + '/**/*', cb);
-    }))[0].map(p => normalize(p).replace(SRC_DIR_PATH, ''));
+    const sourceFiles = (await glob(SRC_DIR_PATH + '/**/*'))
+        .map(p => normalize(p).replace(SRC_DIR_PATH, ''));
 
     return [unpackedFiles, sourceFiles];
 }
