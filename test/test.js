@@ -50,7 +50,7 @@ const folderStructure = [
     },
 ];
 
-test.before('create a folder', async t => {
+test.before('create a folder', async () => {
     await fsify(folderStructure);
 });
 
@@ -146,7 +146,6 @@ test.serial('pack with "cmd" (async)', async t => {
     t.false(await pathExists(ARCH_PATH));
 
     const output = await _7z.cmd(['a', ARCH_PATH, SRC_DIR_PATH]);
-    console.log(output);
     const exists = await pathExists(ARCH_PATH);
     t.true(exists);
     t.is(typeof output, 'string');
