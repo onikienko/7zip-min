@@ -3,6 +3,7 @@
   "version": "1.4.5",
   "description": "Standalone cross-platform zip/unzip with 7za",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "release": "np --no-yarn --no-cleanup",
     "preview": "np --no-yarn --no-cleanup --preview",
