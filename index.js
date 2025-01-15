@@ -60,21 +60,19 @@ function cmd(paramsArr, cb) {
 
 function run(args, cb) {
     cb = onceify(cb);
-    const runError = new Error(); // get full stack trace
     const proc = spawn(BIN, args, {windowsHide: true});
     let output = '';
     proc.on('error', function (err) {
         cb(err);
     });
     proc.on('exit', function (code) {
-        let result = null;
-        if (args[0] === 'l') {
-            result = parseListOutput(output);
-        }
         if (code) {
-            runError.message = `7-zip exited with code ${code}\n${output}`;
+            cb(new Error(`7-zip exited with code ${code}\n${output}`));
+        } else if (args[0] === 'l') {
+            cb(null, parseListOutput(output));
+        } else {
+            cb(null, output);
         }
-        cb(code ? runError : null, result);
     });
     proc.stdout.on('data', (chunk) => {
         output += chunk.toString();
