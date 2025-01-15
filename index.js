@@ -13,13 +13,42 @@ const isUsingAsar = 'electron' in process.versions
 const BIN = isUsingAsar ? path7za.replace('app.asar', 'app.asar.unpacked') : path7za;
 
 /**
+ * @typedef {Object} ListItem
+ * @property {string} name - path to file/dir
+ * @property {string} size - size
+ * @property {string} compressed - packed size
+ * @property {string} date - modified date
+ * @property {string} time - modified time
+ * @property {string} attr - attributes
+ * @property {string} crc - CRC
+ * @property {string} encrypted - encrypted
+ * @property {string} method - compression method
+ * @property {string} block - block
+ */
+
+/**
+ * @callback callbackFn
+ * @param {Error|null} err - error object. Will be `null` if no errors.
+ * @param {string} [output] - output of the 7z command execution if no errors
+ * @returns {void}
+ */
+
+/**
+ * @callback listCallbackFn
+ * @param {Error|null} err - error object. Will be `null` if no errors.
+ * @param {ListItem[]} [output] - result of list command execution if no errors
+ * @returns {void}
+ */
+
+/**
  * Unpack archive.
  * @param {string} pathToPack - path to archive you want to unpack.
- * @param {string|function} destPathOrCb - Either:
- *                                              (i) destination path, where to unpack.
- *                                              (ii) callback function, in case no destPath to be specified
- * @param {function} [cb] - callback function. Will be called once unpack is done. If no errors, first parameter will contain `null`
- * NOTE: Providing destination path is optional. In case it is not provided, cb is expected as the second argument to function.
+ * @param {string|callbackFn} destPathOrCb - Either:
+ * - (i) destination path, where to unpack.
+ * - (ii) callback function, in case no destPath to be specified
+ * @param {callbackFn} [cb] - callback function. Will be called once unpack is done. If no errors, first parameter will contain `null`
+ *
+ * NOTE: Providing a destination path is optional. In case it is not provided, cb is expected as the second argument to function.
  */
 function unpack(pathToPack, destPathOrCb, cb) {
     if (typeof destPathOrCb === 'function' && cb === undefined) {
@@ -34,7 +63,7 @@ function unpack(pathToPack, destPathOrCb, cb) {
  * Pack file or folder to archive.
  * @param {string} pathToSrc - path to file or folder you want to compress.
  * @param {string} pathToDest - path to archive you want to create.
- * @param {function} cb - callback function. Will be called once pack is done. If no errors, first parameter will contain `null`.
+ * @param {callbackFn} cb - callback function. Will be called once pack is done. If no errors, first parameter will contain `null`.
  */
 function pack(pathToSrc, pathToDest, cb) {
     run(['a', pathToDest, pathToSrc], cb);
@@ -43,7 +72,7 @@ function pack(pathToSrc, pathToDest, cb) {
 /**
  * Get an array with compressed file contents.
  * @param {string} pathToSrc - path to file its content you want to list.
- * @param {function} cb - callback function. Will be called once list is done. If no errors, first parameter will contain `null`.
+ * @param {listCallbackFn} cb - callback function. Will be called once list is done. If no errors, first parameter will contain `null`.
  */
 function list(pathToSrc, cb) {
     run(['l', '-slt', '-ba', pathToSrc], cb);
@@ -52,7 +81,7 @@ function list(pathToSrc, cb) {
 /**
  * Run 7za with parameters specified in `paramsArr`.
  * @param {array} paramsArr - array of parameter. Each array item is one parameter.
- * @param {function} cb - callback function. Will be called once command is done. If no errors, first parameter will contain `null`. If no output, second parameter will be `null`.
+ * @param {callbackFn} cb - callback function. Will be called once command is done. If no errors, first parameter will contain `null`. If no output, second parameter will be `null`.
  */
 function cmd(paramsArr, cb) {
     run(paramsArr, cb);
