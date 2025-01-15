@@ -13,6 +13,10 @@
     "type": "git",
     "url": "https://github.com/onikienko/7zip-min.git"
   },
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
   "keywords": [
     "7z",
     "7zip",
