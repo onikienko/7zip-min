@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/onikienko/7zip-min.git"
+    "url": "git+https://github.com/onikienko/7zip-min.git"
   },
   "files": [
     "index.js",
