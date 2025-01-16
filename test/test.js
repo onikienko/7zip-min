@@ -4,7 +4,7 @@ const _7z = require('../index');
 const {glob} = require('glob');
 const test = require('ava');
 const {remove, pathExists} = require('fs-extra');
-const {join, normalize} = require('path');
+const {join, resolve} = require('path');
 
 const SRC_DIR_NAME = 'testDir';
 const SRC_DIR_PATH = join(__dirname, SRC_DIR_NAME);
@@ -182,10 +182,10 @@ test.after.always('cleanup', async () => {
 // get a list of paths for unpackSrcPath and for SRC_DIR_PATH to be compared
 async function getFilesList(unpackSrcPath) {
     const unpackedFiles = (await glob(unpackSrcPath + '/**/*'))
-        .map(p => normalize(p).replace(unpackSrcPath, ''));
+        .map(p => resolve(p).replace(unpackSrcPath, ''));
 
     const sourceFiles = (await glob(SRC_DIR_PATH + '/**/*'))
-        .map(p => normalize(p).replace(SRC_DIR_PATH, ''));
+        .map(p => resolve(p).replace(SRC_DIR_PATH, ''));
 
     return [unpackedFiles, sourceFiles];
 }
