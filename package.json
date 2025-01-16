@@ -5,8 +5,8 @@
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
-    "release": "np --no-yarn --no-cleanup",
-    "preview": "np --no-yarn --no-cleanup --preview",
+    "release": "dotenv release-it --",
+    "preview": "release-it --dry-run",
     "test": "ava"
   },
   "repository": {
@@ -43,11 +43,13 @@
     "7zip-bin": "5.1.1"
   },
   "devDependencies": {
+    "@release-it/conventional-changelog": "^10.0.0",
     "@types/fs-extra": "^11.0.4",
     "ava": "^6.2.0",
+    "dotenv-cli": "^8.0.0",
     "fs-extra": "^11.1.0",
     "fsify": "^5.0.0",
     "glob": "^11.0.1",
-    "np": "^7.6.0"
+    "release-it": "^18.1.1"
   }
 }
