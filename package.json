@@ -3,15 +3,20 @@
   "version": "1.4.5",
   "description": "Standalone cross-platform zip/unzip with 7za",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
-    "release": "np --no-yarn --no-cleanup",
-    "preview": "np --no-yarn --no-cleanup --preview",
+    "release": "dotenv release-it --",
+    "preview": "release-it --dry-run",
     "test": "ava"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/onikienko/7zip-min.git"
+    "url": "git+https://github.com/onikienko/7zip-min.git"
   },
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
   "keywords": [
     "7z",
     "7zip",
@@ -24,7 +29,9 @@
     "zip",
     "gzip",
     "bzip2",
-    "tar"
+    "tar",
+    "pack",
+    "unpack"
   ],
   "author": "Mykhailo Onikiienko <michael.onikienko@gmail.com>",
   "license": "MIT",
@@ -36,10 +43,13 @@
     "7zip-bin": "5.1.1"
   },
   "devDependencies": {
-    "ava": "^4.0.1",
-    "fs-extra": "^11.1.0",
+    "@release-it/conventional-changelog": "^10.0.0",
+    "@types/fs-extra": "^11.0.4",
+    "ava": "^6.2.0",
+    "dotenv-cli": "^8.0.0",
+    "fs-extra": "^11.3.0",
     "fsify": "^5.0.0",
-    "glob": "^8.0.1",
-    "np": "^7.6.0"
+    "glob": "^11.0.1",
+    "release-it": "^18.1.1"
   }
 }

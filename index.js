@@ -1,23 +1,61 @@
 'use strict';
 
+const promisify = require('util').promisify;
 const spawn = require('child_process').spawn;
 const path7za = require('7zip-bin').path7za;
+
+// Handling `path7za` in case of usage inside electron app
+// More details -
+// https://github.com/sindresorhus/electron-util/blob/6c37341e43cdaa890e9145d6065f14b864c8befc/source/node/index.ts#L38
+const isUsingAsar = 'electron' in process.versions
+    && process.argv.length > 1
+    && process.argv[1]?.includes('app.asar');
+const BIN = isUsingAsar ? path7za.replace('app.asar', 'app.asar.unpacked') : path7za;
+
+/**
+ * @typedef {Object} ListItem
+ * @property {string} name - path to file/dir
+ * @property {string} size - size
+ * @property {string} compressed - packed size
+ * @property {string} date - modified date
+ * @property {string} time - modified time
+ * @property {string} attr - attributes
+ * @property {string} crc - CRC
+ * @property {string} encrypted - encrypted
+ * @property {string} method - compression method
+ * @property {string} block - block
+ */
+
+/**
+ * @callback callbackFn
+ * @param {Error|null} err - error object. Will be `null` if no errors.
+ * @param {string} [output] - output of the 7z command execution if no errors
+ * @returns {void}
+ */
+
+/**
+ * @callback listCallbackFn
+ * @param {Error|null} err - error object. Will be `null` if no errors.
+ * @param {ListItem[]} [output] - result of list command execution if no errors
+ * @returns {void}
+ */
 
 /**
  * Unpack archive.
  * @param {string} pathToPack - path to archive you want to unpack.
- * @param {string|function} destPathOrCb - Either:
- *                                              (i) destination path, where to unpack.
- *                                              (ii) callback function, in case no destPath to be specified
- * @param {function} [cb] - callback function. Will be called once unpack is done. If no errors, first parameter will contain `null`
- * NOTE: Providing destination path is optional. In case it is not provided, cb is expected as the second argument to function.
+ * @param {string|callbackFn} destPathOrCb - Either:
+ * - (i) destination path, where to unpack.
+ * - (ii) callback function, in case no destPath to be specified
+ * @param {callbackFn} [cb] - callback function. Will be called once unpack is done. If no errors, first parameter will contain `null`
+ *
+ * NOTE: Providing a destination path is optional. In case it is not provided, cb is expected as the second argument to function.
  */
 function unpack(pathToPack, destPathOrCb, cb) {
     if (typeof destPathOrCb === 'function' && cb === undefined) {
         cb = destPathOrCb;
-        run(path7za, ['x', pathToPack, '-y'], cb);
+        run(['x', pathToPack, '-y'], cb);
     } else {
-        run(path7za, ['x', pathToPack, '-y', '-o' + destPathOrCb], cb);
+        run(['x', pathToPack, '-y', '-o' + destPathOrCb], cb);
     }
 }
 
@@ -25,47 +63,45 @@ function unpack(pathToPack, destPathOrCb, cb) {
  * Pack file or folder to archive.
  * @param {string} pathToSrc - path to file or folder you want to compress.
  * @param {string} pathToDest - path to archive you want to create.
- * @param {function} cb - callback function. Will be called once pack is done. If no errors, first parameter will contain `null`.
+ * @param {callbackFn} cb - callback function. Will be called once pack is done. If no errors, first parameter will contain `null`.
  */
 function pack(pathToSrc, pathToDest, cb) {
-    run(path7za, ['a', pathToDest, pathToSrc], cb);
+    run(['a', pathToDest, pathToSrc], cb);
 }
 
 /**
  * Get an array with compressed file contents.
  * @param {string} pathToSrc - path to file its content you want to list.
- * @param {function} cb - callback function. Will be called once list is done. If no errors, first parameter will contain `null`.
+ * @param {listCallbackFn} cb - callback function. Will be called once list is done. If no errors, first parameter will contain `null`.
  */
 function list(pathToSrc, cb) {
-    run(path7za, ['l', '-slt', '-ba', pathToSrc], cb);
+    run(['l', '-slt', '-ba', pathToSrc], cb);
 }
 
 /**
  * Run 7za with parameters specified in `paramsArr`.
  * @param {array} paramsArr - array of parameter. Each array item is one parameter.
- * @param {function} cb - callback function. Will be called once command is done. If no errors, first parameter will contain `null`. If no output, second parameter will be `null`.
+ * @param {callbackFn} cb - callback function. Will be called once command is done. If no errors, first parameter will contain `null`. If no output, second parameter will be `null`.
  */
 function cmd(paramsArr, cb) {
-    run(path7za, paramsArr, cb);
+    run(paramsArr, cb);
 }
 
-function run(bin, args, cb) {
+function run(args, cb) {
     cb = onceify(cb);
-    const runError = new Error(); // get full stack trace
-    const proc = spawn(bin, args, {windowsHide: true});
+    const proc = spawn(BIN, args, {windowsHide: true});
     let output = '';
     proc.on('error', function (err) {
         cb(err);
     });
     proc.on('exit', function (code) {
-        let result = null;
-        if (args[0] === 'l') {
-            result = parseListOutput(output);
-        }
         if (code) {
-            runError.message = `7-zip exited with code ${code}\n${output}`;
+            cb(new Error(`7-zip exited with code ${code}\n${output}`));
+        } else if (args[0] === 'l') {
+            cb(null, parseListOutput(output));
+        } else {
+            cb(null, output);
         }
-        cb(code ? runError : null, result);
     });
     proc.stdout.on('data', (chunk) => {
         output += chunk.toString();
@@ -133,7 +169,18 @@ function parseListOutput(str) {
     return res;
 }
 
-exports.unpack = unpack;
-exports.pack = pack;
-exports.list = list;
-exports.cmd = cmd;
+function universalCall(fn) {
+    return function (...args) {
+        const cb = args[args.length - 1];
+        if (typeof cb === 'function') {
+            return fn.apply(this, args);
+        } else {
+            return promisify(fn).apply(this, args);
+        }
+    };
+}
+
+exports.unpack = universalCall(unpack);
+exports.pack = universalCall(pack);
+exports.list = universalCall(list);
+exports.cmd = universalCall(cmd);
