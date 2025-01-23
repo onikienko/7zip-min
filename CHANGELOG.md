@@ -1,5 +1,31 @@
 # Changelog
 
+## [2.0.0](https://github.com/onikienko/7zip-min/compare/v1.4.5...v2.0.0) (2025-01-23)
+
+### Features
+
+* ability to use the same API in async way ([e8a9106](https://github.com/onikienko/7zip-min/commit/e8a91065819aa9db29c53d745567d82ab1f70c01)), closes [#24](https://github.com/onikienko/7zip-min/issues/24)
+* add types definition `index.d.ts` ([578c33a](https://github.com/onikienko/7zip-min/commit/578c33aeab18b29ae7c3901995032fcae14b8243))
+* return stdout/stderr output printed by 7z ([a563837](https://github.com/onikienko/7zip-min/commit/a563837eb8c4d2e20ef910c664675e820f79433d)), closes [#38](https://github.com/onikienko/7zip-min/issues/38)
+* support electron (app.assar.unpacked) ([3f1c867](https://github.com/onikienko/7zip-min/commit/3f1c867d6d4dc5935cf2985c31e6585d1a05a2f5)), closes [#98](https://github.com/onikienko/7zip-min/issues/98)
+
+### Documentation
+
+* more detailed jsdoc comments ([ad0df9d](https://github.com/onikienko/7zip-min/commit/ad0df9dd8c551e1fd3f051b9cbe3056bf9369a1b))
+* update CHANGELOG.md ([60da359](https://github.com/onikienko/7zip-min/commit/60da35915b1f9439f2d0152b720de578a8248be1))
+* update date in LICENSE ([a54ab60](https://github.com/onikienko/7zip-min/commit/a54ab60caf8ce0f29020f484310611657857f919))
+* update README.md with new ways to use API ([b9bb08e](https://github.com/onikienko/7zip-min/commit/b9bb08e8879573bcb6da8914a3b986e62cbb81d3))
+
+### Build System and Dependencies
+
+* add "files" prop to package.json ([f1c8cc7](https://github.com/onikienko/7zip-min/commit/f1c8cc7fc64487e7aa06cc9019f96ed0675f22de))
+* add `pack` and `unpack` keywords to package.json ([bb57846](https://github.com/onikienko/7zip-min/commit/bb57846bfa8044e3be6cc48d5792fd985c434eee))
+* **dev-deps:** `ava 6.2.0` ([a914f9c](https://github.com/onikienko/7zip-min/commit/a914f9caeb34efc0ab35710e0f9e4df94ea3bda3))
+* **dev-deps:** `fs-extra v11.3.0` ([12c061e](https://github.com/onikienko/7zip-min/commit/12c061eacd060dbcc2ce0a1c1dc12622fa9912b6))
+* **dev-deps:** `globe v11.0.1` and usage in test.js ([8ba8aaf](https://github.com/onikienko/7zip-min/commit/8ba8aaf77b9d0c286319b465402aeb0fe6001be5))
+* **dev-deps:** add `@types/fs-extra v11.0.4` ([4eba204](https://github.com/onikienko/7zip-min/commit/4eba20485481ead0637a3a5a3c8ca677d090a7bd))
+* use `release-it` instead of `np` ([4dded46](https://github.com/onikienko/7zip-min/commit/4dded467e30a95e18140a558a981e6ed707d3b5b))
+
 ## v1.4.5
 
 - build: update .gitignore
