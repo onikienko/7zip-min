@@ -183,7 +183,7 @@ _7z.cmd(['a', 'path/to/archive.7z', 'path/to/dir/or/file'])
 
 ### Custom 7za path
 
-Sometimes, you may want to use a custom path to the 7za binary. See #160 for more details.
+Sometimes, you may want to use a custom path to the 7za binary. See https://github.com/onikienko/7zip-min/pull/106 for more details.
 
 ```javaScript
 // To find out the path to the 7za binary, you can use the getConfig() method
