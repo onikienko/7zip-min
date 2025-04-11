@@ -39,7 +39,8 @@ const configSettings = {
  * @returns {ConfigSettings} cfg - configuration settings.
  */
 function getConfig() {
-    return structuredClone(configSettings);
+    // spread operator is good until the structure does not contain nested objects
+    return {...configSettings};
 }
 
 

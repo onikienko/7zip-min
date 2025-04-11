@@ -19,7 +19,7 @@ export type CallbackFn = (err: Error | null, output?: string) => void;
 export type ListCallbackFn = (err: Error | null, listItems?: ListItem[]) => void;
 
 export function getConfig(): ConfigSettings;
-export function config(cfg: ConfigSettings);
+export function config(cfg: ConfigSettings): void;
 
 export function unpack(pathToPack: string, destPath?: string): Promise<string>;
 export function unpack(pathToPack: string, cb: CallbackFn): void;

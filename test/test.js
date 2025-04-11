@@ -173,21 +173,44 @@ test.serial('pack path that does not exist (async)', async t => {
     t.true(hasWrongPathMentioning);
 });
 
-test.serial('custom binary path', async t => {
-    const settings = _7z.getConfig();
-    _7z.config({
-        binaryPath: CUSTOM_BINARY_PATH
-    });
+test.serial('custom binary path that does not exist', async t => {
+    try {
+        const oldSettings = _7z.getConfig();
+        _7z.config({
+            binaryPath: '**/wrong/path/to/7z**'
+        });
     
-    const output = (await t2p(cb => {
-        _7z.unpack(ARCH_PATH, UNPACK_PATH, cb);
-    }))[0];
+        await t2p(cb => {
+            _7z.unpack(ARCH_PATH, UNPACK_PATH, cb);
+        });
 
-    _7z.config(settings);
+        _7z.config(oldSettings);
 
-    const unpackSrcPath = join(UNPACK_PATH, SRC_DIR_NAME);
-    t.deepEqual(...await getFilesList(unpackSrcPath));
-    t.is(typeof output, 'string');
+        t.true(false, 'should not be here');
+    } catch(err) {
+        t.true(err.code === 'ENOENT');
+    }
+});
+
+test.serial('custom binary path that exists', async t => {
+    try {
+        const oldSettings = _7z.getConfig();
+        _7z.config({
+            binaryPath: CUSTOM_BINARY_PATH
+        });
+        
+        const output = (await t2p(cb => {
+            _7z.unpack(ARCH_PATH, UNPACK_PATH, cb);
+        }))[0];
+
+        _7z.config(oldSettings);
+
+        const unpackSrcPath = join(UNPACK_PATH, SRC_DIR_NAME);
+        t.deepEqual(...await getFilesList(unpackSrcPath));
+        t.is(typeof output, 'string');
+    } catch (err) {
+        t.true(false, err.message);
+    }
 });
 
 test.after.always('cleanup', async () => {
