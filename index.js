@@ -46,7 +46,7 @@ function getConfig() {
 
 /**
  * Change configuration settings.
- * @param {ConfigSettings} - configuration settings.
+ * @param {ConfigSettings} cfg - configuration settings.
  */
 function config(cfg) {
     Object.assign(configSettings, cfg);
