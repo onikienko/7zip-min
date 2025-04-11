@@ -40,8 +40,7 @@
   },
   "homepage": "https://github.com/onikienko/7zip-min#readme",
   "dependencies": {
-    "7zip-bin": "5.1.1",
-    "7zip-min": "file:"
+    "7zip-bin": "5.1.1"
   },
   "devDependencies": {
     "@release-it/conventional-changelog": "^10.0.0",
