@@ -181,6 +181,21 @@ _7z.cmd(['a', 'path/to/archive.7z', 'path/to/dir/or/file'])
 })();
 ```
 
+### Custom 7za path
+
+Sometimes, you may want to use a custom path to the 7za binary. See #160 for more details.
+
+```javaScript
+// To find out the path to the 7za binary, you can use the getConfig() method
+const config = _7z.getConfig();
+console.log(`Path to 7za binary: ${config.binaryPath}`); 
+
+// To set a custom path to the 7za binary, you can use the config() method
+_7z.config({
+    binaryPath: 'path/to/custom/7za'
+});
+```
+
 Test
 ----
 
