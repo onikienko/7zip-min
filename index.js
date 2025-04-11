@@ -20,7 +20,6 @@ function getDefaultBinaryPath() {
     return isUsingAsar ? path7za.replace('app.asar', 'app.asar.unpacked') : path7za;
 }
 
-
 /**
  * @typedef {Object} ConfigSettings
  * @property {string | undefined} binaryPath - path to binary `7za` or `7za.exe`
@@ -31,9 +30,6 @@ const configSettings = {
     binaryPath: getDefaultBinaryPath()
 }
 
-
-
-
 /**
  * Get current configuration settings.
  * @returns {ConfigSettings} cfg - configuration settings.
@@ -43,7 +39,6 @@ function getConfig() {
     return {...configSettings};
 }
 
-
 /**
  * Change configuration settings.
  * @param {ConfigSettings} cfg - configuration settings.
@@ -51,7 +46,6 @@ function getConfig() {
 function config(cfg) {
     Object.assign(configSettings, cfg);
 }
-
 
 
 /**
