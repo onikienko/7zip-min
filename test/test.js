@@ -11,6 +11,7 @@ const SRC_DIR_PATH = join(__dirname, SRC_DIR_NAME);
 const ARCH_PATH = join(__dirname, 'testDir.7z');
 const UNPACK_PATH = join(__dirname, 'unpackDir');
 const UNPACK_IN_CURRENT_PATH = join(process.cwd(), SRC_DIR_NAME);
+const CUSTOM_BINARY_PATH = require('7zip-bin').path7za;     // we still use the path exported from 7zip-bin package - this is only to test the settings feature
 
 const fsify = require('fsify')({
     cwd: __dirname,
@@ -170,6 +171,46 @@ test.serial('pack path that does not exist (async)', async t => {
     });
     const hasWrongPathMentioning = error.message.includes(wrongPath);
     t.true(hasWrongPathMentioning);
+});
+
+test.serial('custom binary path that does not exist', async t => {
+    try {
+        const oldSettings = _7z.getConfig();
+        _7z.config({
+            binaryPath: '**/wrong/path/to/7z**'
+        });
+    
+        await t2p(cb => {
+            _7z.unpack(ARCH_PATH, UNPACK_PATH, cb);
+        });
+
+        _7z.config(oldSettings);
+
+        t.true(false, 'should not be here');
+    } catch(err) {
+        t.true(err.code === 'ENOENT');
+    }
+});
+
+test.serial('custom binary path that exists', async t => {
+    try {
+        const oldSettings = _7z.getConfig();
+        _7z.config({
+            binaryPath: CUSTOM_BINARY_PATH
+        });
+        
+        const output = (await t2p(cb => {
+            _7z.unpack(ARCH_PATH, UNPACK_PATH, cb);
+        }))[0];
+
+        _7z.config(oldSettings);
+
+        const unpackSrcPath = join(UNPACK_PATH, SRC_DIR_NAME);
+        t.deepEqual(...await getFilesList(unpackSrcPath));
+        t.is(typeof output, 'string');
+    } catch (err) {
+        t.true(false, err.message);
+    }
 });
 
 test.after.always('cleanup', async () => {

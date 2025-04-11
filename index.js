@@ -4,13 +4,49 @@ const promisify = require('util').promisify;
 const spawn = require('child_process').spawn;
 const path7za = require('7zip-bin').path7za;
 
-// Handling `path7za` in case of usage inside electron app
-// More details -
-// https://github.com/sindresorhus/electron-util/blob/6c37341e43cdaa890e9145d6065f14b864c8befc/source/node/index.ts#L38
-const isUsingAsar = 'electron' in process.versions
-    && process.argv.length > 1
-    && process.argv[1]?.includes('app.asar');
-const BIN = isUsingAsar ? path7za.replace('app.asar', 'app.asar.unpacked') : path7za;
+
+/**
+ * Get the default binary path.
+ * @returns {string}
+ */
+function getDefaultBinaryPath() {
+    // Handling `path7za` in case of usage inside electron app
+    // More details -
+    // https://github.com/sindresorhus/electron-util/blob/6c37341e43cdaa890e9145d6065f14b864c8befc/source/node/index.ts#L38
+    const isUsingAsar = 'electron' in process.versions
+        && process.argv.length > 1
+        && process.argv[1]?.includes('app.asar');
+
+    return isUsingAsar ? path7za.replace('app.asar', 'app.asar.unpacked') : path7za;
+}
+
+/**
+ * @typedef {Object} ConfigSettings
+ * @property {string | undefined} binaryPath - path to binary `7za` or `7za.exe`
+ */
+
+// Default config settings
+const configSettings = {
+    binaryPath: getDefaultBinaryPath()
+}
+
+/**
+ * Get current configuration settings.
+ * @returns {ConfigSettings} cfg - configuration settings.
+ */
+function getConfig() {
+    // spread operator is good until the structure does not contain nested objects
+    return {...configSettings};
+}
+
+/**
+ * Change configuration settings.
+ * @param {ConfigSettings} cfg - configuration settings.
+ */
+function config(cfg) {
+    Object.assign(configSettings, cfg);
+}
+
 
 /**
  * @typedef {Object} ListItem
@@ -89,7 +125,7 @@ function cmd(paramsArr, cb) {
 
 function run(args, cb) {
     cb = onceify(cb);
-    const proc = spawn(BIN, args, {windowsHide: true});
+    const proc = spawn(configSettings.binaryPath, args, {windowsHide: true});
     let output = '';
     proc.on('error', function (err) {
         cb(err);
@@ -171,8 +207,8 @@ function parseListOutput(str) {
 
 function universalCall(fn) {
     return function (...args) {
-        const cb = args[args.length - 1];
-        if (typeof cb === 'function') {
+        const cb = args.length >= 1 && typeof args[args.length - 1] === 'function';
+        if (cb) {
             return fn.apply(this, args);
         } else {
             return promisify(fn).apply(this, args);
@@ -180,6 +216,8 @@ function universalCall(fn) {
     };
 }
 
+exports.getConfig = getConfig;
+exports.config = config;
 exports.unpack = universalCall(unpack);
 exports.pack = universalCall(pack);
 exports.list = universalCall(list);
