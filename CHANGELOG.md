@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.1.0](https://github.com/onikienko/7zip-min/compare/v2.0.0...v2.1.0) (2025-04-11)
+
+### Features
+
+* custom binary path setting ([#106](https://github.com/onikienko/7zip-min/issues/106)) ([dfb864d](https://github.com/onikienko/7zip-min/commit/dfb864d0db8abc8b339a60271df5dab5735330e2))
+
+### Documentation
+
+* example usage of `getConfig` and `config` methods ([490ac6e](https://github.com/onikienko/7zip-min/commit/490ac6e2a809d40eba73394127fd35d5a9be165b))
+* fix example url ([a2a3cb8](https://github.com/onikienko/7zip-min/commit/a2a3cb8702425dd119db160fcf65eb9c6a951abd))
+
+### Build System and Dependencies
+
+* **deps-dev:** bump release-it from 18.1.1 to 18.1.2 ([8db6b38](https://github.com/onikienko/7zip-min/commit/8db6b387fc87dd71d49f4ae7ed7e61bd238df52f))
+* **deps:** upgrade `release-it` to v18.1.2 ([6d9d806](https://github.com/onikienko/7zip-min/commit/6d9d8066bc8b307105ae23ae0cb01765360cf66e))
+
 ## [2.0.0](https://github.com/onikienko/7zip-min/compare/v1.4.5...v2.0.0) (2025-01-23)
 
 ### Features
