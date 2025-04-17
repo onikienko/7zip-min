@@ -124,26 +124,45 @@ function cmd(paramsArr, cb) {
 }
 
 function run(args, cb) {
-    cb = onceify(cb);
+    cb = onceify(cb)
     const proc = spawn(configSettings.binaryPath, args, {windowsHide: true});
-    let output = '';
+    let stdout = '';
+    let stderr = '';
+    let spawnError;
+
     proc.on('error', function (err) {
-        cb(err);
+        spawnError = err;
     });
-    proc.on('exit', function (code) {
-        if (code) {
-            cb(new Error(`7-zip exited with code ${code}\n${output}`));
-        } else if (args[0] === 'l') {
-            cb(null, parseListOutput(output));
-        } else {
-            cb(null, output);
-        }
-    });
+
     proc.stdout.on('data', (chunk) => {
-        output += chunk.toString();
+        stdout += chunk.toString();
     });
+
     proc.stderr.on('data', (chunk) => {
-        output += chunk.toString();
+        stderr += chunk.toString();
+    });
+
+    proc.on('close', function (code) {
+        if (spawnError) {
+            return cb(spawnError);
+        }
+        // 7zip exited with an error code
+        if (code !== 0) {
+            const errorMessage = `7-zip exited with code ${code}.\nRaw Error Output:\n${stderr}\nRaw Output:\n${stdout}`;
+            return cb(new Error(errorMessage));
+        }
+
+        // Successful execution:
+        // The command was 'list', parse the stdout
+        if (args[0] === 'l') {
+            try {
+                return cb(null, parseListOutput(stdout));
+            } catch (parseError) {
+                return cb(new Error(`Failed to parse 7-zip list output: ${parseError.message}\nRaw Error output:\n${stderr}\nRaw Output:\n${stdout}`));
+            }
+        }
+        // all other cases of successful execution
+        cb(null, stdout);
     });
 }
 
