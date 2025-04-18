@@ -92,6 +92,16 @@ test.serial('list (async)', async t => {
     t.deepEqual(names, expectedNames, 'Listed file names do not match expected names.');
 });
 
+test.serial('list with empty archive', async t => {
+    const emptyArchPath = join(__dirname, 'empty.7z');
+    await _7z.pack(join(__dirname, 'nonexistent*'), emptyArchPath);
+
+    const result = await _7z.list(emptyArchPath);
+    t.is(result.length, 0, 'Empty archive should return an empty array');
+
+    await remove(emptyArchPath);
+});
+
 test.serial('unpack', async t => {
     const output = (await t2p(cb => {
         _7z.unpack(ARCH_PATH, UNPACK_PATH, cb);
