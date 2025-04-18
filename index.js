@@ -111,7 +111,7 @@ function pack(pathToSrc, pathToDest, cb) {
  * @param {listCallbackFn} cb - callback function. Will be called once list is done. If no errors, first parameter will contain `null`.
  */
 function list(pathToSrc, cb) {
-    run(['l', '-slt', '-ba', pathToSrc], cb);
+    run(['l', '-slt', '-ba', '-sccUTF-8', pathToSrc], cb);
 }
 
 /**

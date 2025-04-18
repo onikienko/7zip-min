@@ -33,19 +33,19 @@ const folderStructure = [
                     },
                     {
                         type: fsify.FILE,
-                        name: 'testDir_dir1_file2.txt',
-                        contents: 'Lorem ipsum dolor sit amet.',
+                        name: 'СлаваУкраїні!', // file name in non-latin characters (Ukrainian, cyrillic)
+                        contents: 'Glory to Ukraine!',
                     },
                 ],
             },
             {
                 type: fsify.FILE,
-                name: 'testDir_file1.txt',
+                name: 'Brasileirão de Seleções.txt', // Portuguese, with accents
                 contents: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
             },
             {
                 type: fsify.FILE,
-                name: 'testDir_file2_empty.txt',
+                name: 'ウクライナ.txt',
             },
         ],
     },
@@ -78,7 +78,6 @@ test.serial('list', async t => {
     const result = (await t2p(cb => {
         _7z.list(ARCH_PATH, cb);
     }))[0];
-    t.is(result.length, 6);
     const names = result.map(el => el.name).sort();
     const expectedNames = getExpectedPathsFromStructure(folderStructure).sort();
     t.deepEqual(names, expectedNames, 'Listed file names do not match expected names.');
@@ -86,7 +85,6 @@ test.serial('list', async t => {
 
 test.serial('list (async)', async t => {
     const result = await _7z.list(ARCH_PATH);
-    t.is(result.length, 6);
     const names = result.map(el => el.name).sort();
     const expectedNames = getExpectedPathsFromStructure(folderStructure).sort();
     t.deepEqual(names, expectedNames, 'Listed file names do not match expected names.');
