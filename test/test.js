@@ -79,17 +79,17 @@ test.serial('list', async t => {
         _7z.list(ARCH_PATH, cb);
     }))[0];
     t.is(result.length, 6);
-    result.forEach(el => {
-        t.true(Boolean(el.name));
-    });
+    const names = result.map(el => el.name).sort();
+    const expectedNames = getExpectedPathsFromStructure(folderStructure).sort();
+    t.deepEqual(names, expectedNames, 'Listed file names do not match expected names.');
 });
 
 test.serial('list (async)', async t => {
     const result = await _7z.list(ARCH_PATH);
     t.is(result.length, 6);
-    result.forEach(el => {
-        t.true(Boolean(el.name));
-    });
+    const names = result.map(el => el.name).sort();
+    const expectedNames = getExpectedPathsFromStructure(folderStructure).sort();
+    t.deepEqual(names, expectedNames, 'Listed file names do not match expected names.');
 });
 
 test.serial('unpack', async t => {
@@ -152,7 +152,7 @@ test.serial('pack with "cmd" (async)', async t => {
     t.is(typeof output, 'string');
 });
 
-test.serial('pack path that does not exist', async t => {
+test.serial('pack a path that does not exist', async t => {
     const wrongPath = join(__dirname, 'noPath');
     const error = await t.throwsAsync(async () => {
         await t2p(cb => {
@@ -164,7 +164,7 @@ test.serial('pack path that does not exist', async t => {
     t.true(hasWrongPathMentioning);
 });
 
-test.serial('pack path that does not exist (async)', async t => {
+test.serial('pack a path that does not exist (async)', async t => {
     const wrongPath = join(__dirname, 'noPathAsync');
     const error = await t.throwsAsync(async () => {
         await _7z.pack(join(wrongPath), ARCH_PATH);
@@ -213,6 +213,24 @@ async function getFilesList(unpackSrcPath) {
         .map(p => resolve(p).replace(SRC_DIR_PATH, ''));
 
     return [unpackedFiles, sourceFiles];
+}
+
+/**
+ * Recursively generates a flat list of expected paths from the fsify structure.
+ * @param {Array} items - The array of fsify structure items (files/directories).
+ * @param {string} parentPath - The path of the parent directory.
+ * @returns {Array<string>} A flat list of relative paths.
+ */
+function getExpectedPathsFromStructure(items, parentPath = '') {
+    let paths = [];
+    for (const item of items) {
+        const currentPath = parentPath ? join(parentPath, item.name) : item.name;
+        paths.push(currentPath);
+        if (item.type === fsify.DIRECTORY && item.contents && item.contents.length > 0) {
+            paths = paths.concat(getExpectedPathsFromStructure(item.contents, currentPath));
+        }
+    }
+    return paths;
 }
 
 // util: thunk to promise
