@@ -1,7 +1,7 @@
 'use strict';
 
 const { glob } = require('glob');
-const { resolve, posix, join } = require('path');
+const { resolve, join } = require('path');
 
 const SRC_DIR_NAME = 'testDir';
 const SRC_DIR_PATH = join(__dirname, SRC_DIR_NAME);
@@ -38,7 +38,7 @@ function getExpectedPathsFromStructure(items, parentPath = '') {
     for (const item of items) {
         if (!item || typeof item.name === 'undefined') continue; // skip malformed entries
         const name = String(item.name);
-        const currentPath = parentPath ? posix.join(parentPath, name) : name;
+        const currentPath = parentPath ? join(parentPath, name) : name;
         paths.push(currentPath);
         if (item.contents && Array.isArray(item.contents) && item.contents.length > 0) {
             paths = paths.concat(getExpectedPathsFromStructure(item.contents, currentPath));

@@ -80,7 +80,7 @@ test.serial('list', async t => {
     t.deepEqual(names, expectedNames, 'Listed file names do not match expected names.');
 
     // Detailed check for one specific file
-    const targetFile = 'testDir/Brasileirão de Seleções.txt';
+    const targetFile = join('testDir', 'Brasileirão de Seleções.txt');
     const fileInfo = result.find(el => el.name === targetFile);
 
     t.truthy(fileInfo, `File ${targetFile} should be in the list`);
