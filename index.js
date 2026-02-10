@@ -168,26 +168,30 @@ function cmd(paramsArr, cb) {
 function run(args, cb) {
     cb = onceify(cb)
     const proc = spawn(configSettings.binaryPath, args, {windowsHide: true});
-    let stdout = '';
-    let stderr = '';
+    const stdoutChunks = [];
+    const stderrChunks = [];
     let spawnError;
 
-    proc.on('error', function (err) {
+    proc.on('error', (err) => {
         spawnError = err;
     });
 
     proc.stdout.on('data', (chunk) => {
-        stdout += chunk.toString();
+        stdoutChunks.push(chunk);
     });
 
     proc.stderr.on('data', (chunk) => {
-        stderr += chunk.toString();
+        stderrChunks.push(chunk);
     });
 
-    proc.on('close', function (code) {
+    proc.on('close', (code) => {
         if (spawnError) {
             return cb(spawnError);
         }
+
+        const stdout = Buffer.concat(stdoutChunks).toString();
+        const stderr = Buffer.concat(stderrChunks).toString();
+
         // 7zip exited with an error code
         if (code !== 0) {
             const errorMessage = `7-zip exited with code ${code}.\nRaw Error Output:\n${stderr}\nRaw Output:\n${stdout}`;
