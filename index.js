@@ -1,8 +1,8 @@
 'use strict';
 
-const promisify = require('util').promisify;
-const spawn = require('child_process').spawn;
-const path7za = require('7zip-bin').path7za;
+const { promisify } = require('util');
+const { spawn } = require('child_process');
+const { path7za } = require('7zip-bin');
 
 
 /**
