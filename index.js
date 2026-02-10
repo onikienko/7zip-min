@@ -254,7 +254,7 @@ function parseListOutput(str) {
         if (!lines.length) continue;
         for (let line of lines) {
             // Split by first " = " occurrence. This will also add an empty 3rd elm to the array. Just ignore it
-            const data = line.split(/ = (.*)/s);
+            const data = line.split(/ = (.*)/);
             if (data.length !== 3) continue;
             const name = data[0].trim();
             const val = data[1].trim();
