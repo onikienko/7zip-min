@@ -217,6 +217,9 @@ function run(args, cb) {
 // javascript V8 optimisation and “leaking arguments”
 // making callback to be invoked only once
 function onceify(fn) {
+    if (typeof fn !== 'function') {
+        return function () {};
+    }
     let called = false;
     return function () {
         if (called) return;
