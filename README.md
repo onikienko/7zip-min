@@ -33,7 +33,7 @@ You will have to unpack the binary ([`asarUnpack`](https://www.electron.build/co
 Usage
 -----
 
-You may use `pack` and `unpack` methods for simple packing/unpacking. 
+You may use `pack`, `unpack` and `unpackSome` methods for simple packing/unpacking. 
 
 You can also use `list` to get an array with the file content properties (includes date, time, attr, size, compressed, and name)
 
@@ -49,6 +49,7 @@ const _7z = require('7zip-min');
 // .......
 await _7z.pack('path/to/dir/or/file', 'path/to/archive.7z');
 await _7z.unpack('path/to/archive.7z', 'where/to/unpack');
+await _7z.unpackSome('path/to/archive.7z', ['file1.txt', 'dir1'], 'where/to/unpack');
 const list = await _7z.list('path/to/archive.7z'); // list of items inside archive
 const output = await _7z.cmd(['a', 'path/to/archive.7z', 'path/to/dir/or/file']); // run custom command
 ```
@@ -85,6 +86,42 @@ _7z.unpack('path/to/archive.7z', 'where/to/unpack')
 
 // if no output directroy specified, it will unpack into the current directory (process.cwd())
 _7z.unpack('path/to/archive.7z')
+    .then(output => console.log('stdout of the 7za command execution', output))
+    .catch(err => console.error('Error', err.message));
+```
+
+#### unpackSome()
+
+Unpack one or more files fro archive.
+
+```javaScript
+// unpackSome with callback
+_7z.unpackSome('path/to/archive.7z', ['file1.txt', 'dir/file2.txt'], 'where/to/unpack', (err, output) => {
+    if (err) {
+        console.error('Error', err.message);
+    } else {
+        // everything is Ok
+        console.log('stdout of the 7za command execution', output);
+    }
+});
+
+// unpackSome with promise
+_7z.unpackSome('path/to/archive.7z', ['file1.txt'], 'where/to/unpack')
+    .then(output => console.log('stdout of the 7za command execution', output))
+    .catch(err => console.error('Error', err.message));
+
+// unpackSome with async/await
+(async () => {
+    try {
+        const output = await _7z.unpackSome('path/to/archive.7z', ['file1.txt', 'dir/file2.txt'], 'where/to/unpack');
+        console.log('stdout of the 7za command execution', output);
+    } catch (err) {
+        console.error('Error', err.message);
+    }
+})();
+
+// if no output directroy specified, it will unpack into the current directory (process.cwd())
+_7z.unpackSome('path/to/archive.7z', ['file1.txt', 'dir/file2.txt'])
     .then(output => console.log('stdout of the 7za command execution', output))
     .catch(err => console.error('Error', err.message));
 ```

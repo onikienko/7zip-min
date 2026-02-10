@@ -25,6 +25,10 @@ export function unpack(pathToPack: string, destPath?: string): Promise<string>;
 export function unpack(pathToPack: string, cb: CallbackFn): void;
 export function unpack(pathToPack: string, destPath: string, cb: CallbackFn): void;
 
+export function unpackSome(pathToPack: string, filesToUnpack: string[], destPath?: string): Promise<string>;
+export function unpackSome(pathToPack: string, filesToUnpack: string[], cb: CallbackFn): void;
+export function unpackSome(pathToPack: string, filesToUnpack: string[], destPath: string, cb: CallbackFn): void;
+
 export function pack(pathToSrc: string, pathToDest: string): Promise<string>;
 export function pack(pathToSrc: string, pathToDest: string, cb: CallbackFn): void;
 

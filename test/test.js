@@ -136,6 +136,105 @@ test.serial('unpack to the current path (async)', async t => {
     t.is(typeof output, 'string');
 });
 
+test.serial('unpackSome', async t => {
+    await remove(UNPACK_PATH);
+    t.false(await pathExists(UNPACK_PATH));
+
+    const filesToExtract = ['Some = File = Name.txt', 'Brasileirão de Seleções.txt'];
+
+    const output = (await t2p(cb => {
+        _7z.unpackSome(ARCH_PATH, filesToExtract, UNPACK_PATH, cb);
+    }))[0];
+
+    // Check if the specific files were extracted
+    t.true(await pathExists(join(UNPACK_PATH, SRC_DIR_NAME, 'dir1', 'Some = File = Name.txt')));
+    t.true(await pathExists(join(UNPACK_PATH, SRC_DIR_NAME, 'Brasileirão de Seleções.txt')));
+
+    // Check that other files were NOT extracted
+    t.false(await pathExists(join(UNPACK_PATH, SRC_DIR_NAME, 'dir1', 'СлаваУкраїні!')));
+    t.false(await pathExists(join(UNPACK_PATH, SRC_DIR_NAME, 'ウクライナ.txt')));
+
+    t.is(typeof output, 'string');
+});
+
+test.serial('unpackSome (async)', async t => {
+    // Clean up unpack directory
+    await remove(UNPACK_PATH);
+    t.false(await pathExists(UNPACK_PATH));
+
+    // Select different files to extract
+    const filesToExtract = ['СлаваУкраїні!', 'ウクライナ.txt'];
+
+    const output = await _7z.unpackSome(ARCH_PATH, filesToExtract, UNPACK_PATH);
+
+    // Check if the specific files were extracted
+    t.true(await pathExists(join(UNPACK_PATH, SRC_DIR_NAME, 'dir1', 'СлаваУкраїні!')));
+    t.true(await pathExists(join(UNPACK_PATH, SRC_DIR_NAME, 'ウクライナ.txt')));
+
+    // Check that other files were NOT extracted
+    t.false(await pathExists(join(UNPACK_PATH, SRC_DIR_NAME, 'dir1', 'Some = File = Name.txt')));
+    t.false(await pathExists(join(UNPACK_PATH, SRC_DIR_NAME, 'Brasileirão de Seleções.txt')));
+
+    t.is(typeof output, 'string');
+});
+
+test.serial('unpackSome to the current path', async t => {
+    // Clean up any previous extraction in the current directory
+    await remove(UNPACK_IN_CURRENT_PATH);
+    t.false(await pathExists(UNPACK_IN_CURRENT_PATH));
+
+    const filesToExtract = ['dir1'];  // Extract entire directory
+
+    const output = (await t2p(cb => {
+        _7z.unpackSome(ARCH_PATH, filesToExtract, cb);
+    }))[0];
+
+    // Check that dir1 and its contents were extracted
+    t.true(await pathExists(join(UNPACK_IN_CURRENT_PATH, 'dir1')));
+    t.true(await pathExists(join(UNPACK_IN_CURRENT_PATH, 'dir1', 'Some = File = Name.txt')));
+    t.true(await pathExists(join(UNPACK_IN_CURRENT_PATH, 'dir1', 'СлаваУкраїні!')));
+
+    // Check that other files at the root level were NOT extracted
+    t.false(await pathExists(join(UNPACK_IN_CURRENT_PATH, 'Brasileirão de Seleções.txt')));
+    t.false(await pathExists(join(UNPACK_IN_CURRENT_PATH, 'ウクライナ.txt')));
+
+    t.is(typeof output, 'string');
+});
+
+test.serial('unpackSome to the current path (async)', async t => {
+    // Clean up any previous extraction
+    await remove(UNPACK_IN_CURRENT_PATH);
+    t.false(await pathExists(UNPACK_IN_CURRENT_PATH));
+
+    // Extract a specific file with wildcard pattern
+    const filesToExtract = ['*.txt'];
+
+    const output = await _7z.unpackSome(ARCH_PATH, filesToExtract);
+
+    // txt files should be extracted
+    t.true(await pathExists(join(UNPACK_IN_CURRENT_PATH, 'Brasileirão de Seleções.txt')));
+    t.true(await pathExists(join(UNPACK_IN_CURRENT_PATH, 'ウクライナ.txt')));
+    t.true(await pathExists(join(UNPACK_IN_CURRENT_PATH, 'dir1', 'Some = File = Name.txt')));
+
+    t.false(await pathExists(join(UNPACK_IN_CURRENT_PATH, 'dir1', 'СлаваУкраїні!')));
+
+    t.is(typeof output, 'string');
+});
+
+test.serial('unpackSome throws if filesToUnpack is not an array', async t => {
+    const error = await t.throwsAsync(async () => {
+        await _7z.unpackSome(ARCH_PATH, 'not-an-array', UNPACK_PATH);
+    });
+    t.is(error.message, 'filesToUnpack must be an array');
+});
+
+test.serial('unpackSome throws if filesToUnpack is empty', async t => {
+    const error = await t.throwsAsync(async () => {
+        await _7z.unpackSome(ARCH_PATH, [], UNPACK_PATH);
+    });
+    t.is(error.message, 'No files to unpack specified');
+});
+
 test.serial('pack with "cmd"', async t => {
     // remove the archive created in previous tests
     await remove(ARCH_PATH);
@@ -214,11 +313,12 @@ test.after.always('cleanup', async () => {
 
 // get a list of paths for unpackSrcPath and for SRC_DIR_PATH to be compared
 async function getFilesList(unpackSrcPath) {
+    const normalizePath = (path) => resolve(path).normalize('NFC');
     const unpackedFiles = (await glob(unpackSrcPath + '/**/*'))
-        .map(p => resolve(p).replace(unpackSrcPath, ''));
+        .map(p => normalizePath(p).replace(unpackSrcPath, ''));
 
     const sourceFiles = (await glob(SRC_DIR_PATH + '/**/*'))
-        .map(p => resolve(p).replace(SRC_DIR_PATH, ''));
+        .map(p => normalizePath(p).replace(SRC_DIR_PATH, ''));
 
     return [unpackedFiles, sourceFiles];
 }

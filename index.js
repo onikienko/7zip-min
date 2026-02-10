@@ -96,6 +96,41 @@ function unpack(pathToPack, destPathOrCb, cb) {
 }
 
 /**
+ * Unpack a specific file (or files) from an archive, recursively.
+ * @param {string} pathToPack - path to archive you want to unpack.
+ * @param {string[]} filesToUnpack - array of file/directory names to unpack from the archive.
+ * @param {string|callbackFn} destPathOrCb - Either:
+ * - (i) destination path, where to unpack.
+ * - (ii) callback function, in case no destPath to be specified
+ * @param {callbackFn} [cb] - callback function. Will be called once unpack is done. If no errors, first parameter will contain `null`
+ *
+ * NOTE: Providing a destination path is optional. In case it is not provided, cb is expected as the third argument to function.
+ */
+function unpackSome(pathToPack, filesToUnpack, destPathOrCb, cb) {
+    const args = ['x', pathToPack, '-y', '-r'];
+
+    let destPath = destPathOrCb;
+    if (typeof destPathOrCb === 'function' && cb === undefined) {
+        cb = destPathOrCb;
+        destPath = undefined;
+    }
+
+    if (destPath) {
+        args.push('-o' + destPath);
+    }
+
+    if (!Array.isArray(filesToUnpack)) {
+        return cb(new Error('filesToUnpack must be an array'));
+    }
+
+    if (filesToUnpack.length === 0) {
+        return cb(new Error('No files to unpack specified'));
+    }
+
+    run(args.concat(filesToUnpack), cb);
+}
+
+/**
  * Pack file or folder to archive.
  * @param {string} pathToSrc - path to file or folder you want to compress.
  * @param {string} pathToDest - path to archive you want to create.
@@ -238,6 +273,7 @@ function universalCall(fn) {
 exports.getConfig = getConfig;
 exports.config = config;
 exports.unpack = universalCall(unpack);
+exports.unpackSome = universalCall(unpackSome);
 exports.pack = universalCall(pack);
 exports.list = universalCall(list);
 exports.cmd = universalCall(cmd);
