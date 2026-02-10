@@ -7,7 +7,7 @@
   "scripts": {
     "release": "dotenv release-it --",
     "preview": "release-it --dry-run",
-    "test": "ava"
+    "test": "ava test/test.js"
   },
   "repository": {
     "type": "git",
@@ -22,16 +22,17 @@
     "7zip",
     "7-zip",
     "7za",
+    "zip",
     "compress",
     "decompress",
+    "pack",
     "extract",
+    "unzip",
+    "unpack",
     "lzma",
-    "zip",
     "gzip",
     "bzip2",
-    "tar",
-    "pack",
-    "unpack"
+    "tar"
   ],
   "author": "Mykhailo Onikiienko <michael.onikienko@gmail.com>",
   "license": "MIT",
