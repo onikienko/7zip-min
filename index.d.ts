@@ -3,7 +3,7 @@
  */
 export interface ConfigSettings {
     /**
-     * Path to the 7za binary.
+     * Path to the 7z binary.
      */
     binaryPath?: string;
 }
@@ -17,47 +17,47 @@ export interface ListItem {
      */
     name: string;
     /**
-     * Uncompressed size in bytes.
+     * Uncompressed size in bytes (string as returned by 7z).
      */
-    size: string;
+    size?: string;
     /**
-     * Compressed (packed) size in bytes.
+     * Compressed (packed) size in bytes (string as returned by 7z).
      */
-    compressed: string;
+    compressed?: string;
     /**
      * Modified date.
      */
-    date: string;
+    date?: string;
     /**
      * Modified time.
      */
-    time: string;
+    time?: string;
     /**
      * File or directory attributes.
      */
-    attr: string;
+    attr?: string;
     /**
      * CRC checksum.
      */
-    crc: string;
+    crc?: string;
     /**
      * Indicates if the item is encrypted.
      */
-    encrypted: string;
+    encrypted?: string;
     /**
      * Compression method used.
      */
-    method: string;
+    method?: string;
     /**
      * Block number.
      */
-    block: string;
+    block?: string;
 }
 
 /**
  * Callback function for general commands.
  * @param err Error object if the command failed, or null if successful.
- * @param output The stdout output of the 7za command.
+ * @param output The stdout output of the 7z command.
  */
 export type CallbackFn = (err: Error | null, output?: string) => void;
 
@@ -85,7 +85,7 @@ export function config(cfg: ConfigSettings): void;
  * Unpacks an archive.
  * @param pathToArch Path to the archive file.
  * @param destPath Optional destination path. If not provided, unpacks to the current directory.
- * @returns A promise that resolves with the command output.
+ * @returns A promise that resolves with the 7z command output.
  * @example
  * await _7z.unpack('archive.7z', 'target/path');
  */
@@ -109,7 +109,7 @@ export function unpack(pathToArch: string, destPath: string, cb: CallbackFn): vo
  * @param pathToArch Path to the archive file.
  * @param filesToUnpack Array of file/directory paths to extract from the archive.
  * @param destPath Optional destination path. If not provided, unpacks to the current directory.
- * @returns A promise that resolves with the command output.
+ * @returns A promise that resolves with the 7z command output.
  * @example
  * await _7z.unpackSome('archive.7z', ['file1.txt', 'dir1'], 'target/path');
  */
@@ -134,7 +134,7 @@ export function unpackSome(pathToArch: string, filesToUnpack: string[], destPath
  * Packs files or directories into an archive.
  * @param pathToSrc Path to the source file or directory.
  * @param pathToArch Path where the archive will be created.
- * @returns A promise that resolves with the command output.
+ * @returns A promise that resolves with the 7z command output.
  * @example
  * await _7z.pack('source/path', 'archive.7z');
  */
@@ -165,7 +165,7 @@ export function list(pathToArch: string, cb: ListCallbackFn): void;
 /**
  * Runs a custom 7-zip command.
  * @param paramsArr Array of command-line parameters to pass to 7za.
- * @returns A promise that resolves with the command output.
+ * @returns A promise that resolves with the 7z command output.
  * @example
  * await _7z.cmd(['a', 'archive.7z', 'file.txt']);
  */
