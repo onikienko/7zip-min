@@ -189,8 +189,9 @@ function run(args, cb) {
             return cb(spawnError);
         }
 
-        const stdout = Buffer.concat(stdoutChunks).toString();
-        const stderr = Buffer.concat(stderrChunks).toString();
+        // Guard Buffer.concat: Buffer.concat([]) throws, use empty string fallback
+        const stdout = stdoutChunks.length ? Buffer.concat(stdoutChunks).toString() : '';
+        const stderr = stderrChunks.length ? Buffer.concat(stderrChunks).toString() : '';
 
         // 7zip exited with an error code
         if (code !== 0) {
