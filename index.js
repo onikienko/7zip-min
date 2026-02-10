@@ -270,7 +270,11 @@ function parseListOutput(str) {
                 }
             }
         }
-        if (Object.keys(obj).length) res.push(obj);
+        if (Object.keys(obj).length) {
+            // Guarantee that the item always have a `name` property
+            if (!obj.name) obj.name = '';
+            res.push(obj);
+        }
     }
     return res;
 }
