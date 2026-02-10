@@ -77,6 +77,25 @@ function config(cfg) {
  */
 
 /**
+ * Helper to handle optional destination path and callback adjustment.
+ * @param {string[]} args - The arguments array to push to.
+ * @param {string|function} destPathOrCb - Destination path or callback.
+ * @param {function} [cb] - Callback.
+ * @returns {function} The resolved callback.
+ */
+function resolveOptionalDest(args, destPathOrCb, cb) {
+    let destPath = destPathOrCb;
+    if (typeof destPathOrCb === 'function' && cb === undefined) {
+        cb = destPathOrCb;
+        destPath = undefined;
+    }
+    if (destPath) {
+        args.push('-o' + destPath);
+    }
+    return cb;
+}
+
+/**
  * Unpack archive.
  * @param {string} pathToPack - path to archive you want to unpack.
  * @param {string|callbackFn} destPathOrCb - Either:
@@ -87,12 +106,9 @@ function config(cfg) {
  * NOTE: Providing a destination path is optional. In case it is not provided, cb is expected as the second argument to function.
  */
 function unpack(pathToPack, destPathOrCb, cb) {
-    if (typeof destPathOrCb === 'function' && cb === undefined) {
-        cb = destPathOrCb;
-        run(['x', pathToPack, '-y'], cb);
-    } else {
-        run(['x', pathToPack, '-y', '-o' + destPathOrCb], cb);
-    }
+    const args = ['x', pathToPack, '-y'];
+    cb = resolveOptionalDest(args, destPathOrCb, cb);
+    run(args, cb);
 }
 
 /**
@@ -108,16 +124,7 @@ function unpack(pathToPack, destPathOrCb, cb) {
  */
 function unpackSome(pathToPack, filesToUnpack, destPathOrCb, cb) {
     const args = ['x', pathToPack, '-y', '-r'];
-
-    let destPath = destPathOrCb;
-    if (typeof destPathOrCb === 'function' && cb === undefined) {
-        cb = destPathOrCb;
-        destPath = undefined;
-    }
-
-    if (destPath) {
-        args.push('-o' + destPath);
-    }
+    cb = resolveOptionalDest(args, destPathOrCb, cb);
 
     if (!Array.isArray(filesToUnpack)) {
         return cb(new Error('filesToUnpack must be an array'));
