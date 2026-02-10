@@ -221,10 +221,10 @@ function onceify(fn) {
         return function () {};
     }
     let called = false;
-    return function () {
+    return function (...args) {
         if (called) return;
         called = true;
-        fn.apply(this, Array.prototype.slice.call(arguments)); // slice arguments
+        fn.apply(this, args);
     };
 }
 
