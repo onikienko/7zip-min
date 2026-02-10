@@ -33,199 +33,81 @@ You will have to unpack the binary ([`asarUnpack`](https://www.electron.build/co
 Usage
 -----
 
-You may use `pack`, `unpack` and `unpackSome` methods for simple packing/unpacking. 
+All methods return a `Promise` (useable with `async/await`) and also support standard Node.js callbacks as the last argument. The Promise resolves with the standard output (stdout) of the 7z command (except `list()` which returns an array of objects).
 
-You can also use `list` to get an array with the file content properties (includes date, time, attr, size, compressed, and name)
-
-Or use `cmd` to run 7za with custom parameters (see [Command Line Version User's Guide](https://web.mit.edu/outland/arch/i386_rhel4/build/p7zip-current/DOCS/MANUAL/))
-
-You can use package with callbacks and in async way (with promises).
-
-### Basic examples
-
-```javaScript
+```javascript
 const _7z = require('7zip-min');
-
-// .......
-await _7z.pack('path/to/dir/or/file', 'path/to/archive.7z');
-await _7z.unpack('path/to/archive.7z', 'where/to/unpack');
-await _7z.unpackSome('path/to/archive.7z', ['file1.txt', 'dir1'], 'where/to/unpack');
-const list = await _7z.list('path/to/archive.7z'); // list of items inside archive
-const output = await _7z.cmd(['a', 'path/to/archive.7z', 'path/to/dir/or/file']); // run custom command
-```
-
-### Examples with callbacks and promises
-
-#### unpack()
-
-```javaScript
-// unpack with callback
-_7z.unpack('path/to/archive.7z', 'where/to/unpack', (err, output) => {
-    if (err) {
-        console.error('Error', err.message);
-    } else {
-        // everything is Ok
-        console.log('stdout of the 7za command execution', output); // output just in case you need it
-    }
-});
-
-// unpack with promise
-_7z.unpack('path/to/archive.7z', 'where/to/unpack')
-    .then(output => console.log('stdout of the 7za command execution', output))
-    .catch(err => console.error('Error', err.message));
-
-// unpack with async/await
-(async () => {
-    try {
-        const output = await _7z.unpack('path/to/archive.7z', 'where/to/unpack');
-        console.log('stdout of the 7za command execution', output);
-    } catch (err) {
-        console.error('Error', err.message);
-    }
-})();
-
-// if no output directroy specified, it will unpack into the current directory (process.cwd())
-_7z.unpack('path/to/archive.7z')
-    .then(output => console.log('stdout of the 7za command execution', output))
-    .catch(err => console.error('Error', err.message));
-```
-
-#### unpackSome()
-
-Unpack one or more files fro archive.
-
-```javaScript
-// unpackSome with callback
-_7z.unpackSome('path/to/archive.7z', ['file1.txt', 'dir/file2.txt'], 'where/to/unpack', (err, output) => {
-    if (err) {
-        console.error('Error', err.message);
-    } else {
-        // everything is Ok
-        console.log('stdout of the 7za command execution', output);
-    }
-});
-
-// unpackSome with promise
-_7z.unpackSome('path/to/archive.7z', ['file1.txt'], 'where/to/unpack')
-    .then(output => console.log('stdout of the 7za command execution', output))
-    .catch(err => console.error('Error', err.message));
-
-// unpackSome with async/await
-(async () => {
-    try {
-        const output = await _7z.unpackSome('path/to/archive.7z', ['file1.txt', 'dir/file2.txt'], 'where/to/unpack');
-        console.log('stdout of the 7za command execution', output);
-    } catch (err) {
-        console.error('Error', err.message);
-    }
-})();
-
-// if no output directroy specified, it will unpack into the current directory (process.cwd())
-_7z.unpackSome('path/to/archive.7z', ['file1.txt', 'dir/file2.txt'])
-    .then(output => console.log('stdout of the 7za command execution', output))
-    .catch(err => console.error('Error', err.message));
 ```
 
 #### pack()
+```javascript
+await _7z.pack('path/to/dir/or/file', 'path/to/archive.7z');
+```
 
-```javaScript
-// pack with callback
-_7z.pack('path/to/dir/or/file', 'path/to/archive.7z', (err, output) => {
-    if (err) {
-        console.error('Error', err.message);
-    } else {
-        // everything is Ok
-        console.log('stdout of the 7za command execution', output);
-    }
-});
+#### unpack()
+```javascript
+await _7z.unpack('path/to/archive.7z', 'where/to/unpack');
 
-// pack with promise
-_7z.pack('path/to/dir/or/file', 'path/to/archive.7z')
-    .then(output => console.log('stdout of the 7za command execution', output))
-    .catch(err => console.error('Error', err.message));
+// If no destination is specified, it unpacks into the current directory (process.cwd())
+await _7z.unpack('path/to/archive.7z');
+```
 
-// pack with async/await
-(async () => {
-    try {
-        const output = await _7z.pack('path/to/dir/or/file', 'path/to/archive.7z');
-        console.log('stdout of the 7za command execution', output);
-    } catch (err) {
-        console.error('Error', err.message);
-    }
-})();
+#### unpackSome()
+Unpack specific files or directories from an archive.
+```javascript
+await _7z.unpackSome('path/to/archive.7z', ['file1.txt', 'dir1'], 'where/to/unpack');
+
+// If no destination is specified, it unpacks into the current directory (process.cwd())
+await _7z.unpackSome('path/to/archive.7z', ['*.txt']); // unpack all .txt files in the current dir
 ```
 
 #### list()
-
-```javaScript
-// list with callback
-_7z.list('path/to/archive.7z', (err, list) => {
-    if (err) {
-        console.error('Error', err.message);
-    } else {
-        console.log('List of items inside the archive', list);
-        // For each element in the archive you will have:
-        // name, date, time, attr, size (in bytes), compressed (compressed size in bytes), crc, method, encrypted, block
-        // Depending on the archive type some values may be empty or missed
-    }
-});
-
-// list with promise
-_7z.list('path/to/archive.7z')
-    .then(list => console.log('List of items inside the archive', list))
-    .catch(err => console.error('Error', err.message));
-
-// list with async/await
-(async () => {
-    try {
-        const list = await _7z.list('path/to/archive.7z');
-        console.log('List of items inside the archive', list);
-    } catch (err) {
-        console.error('Error', err.message);
-    }
-})();
+```javascript
+const list = await _7z.list('path/to/archive.7z');
+// Items contain: name, size, compressed, date, time, attr, crc, method, etc.
 ```
 
 #### cmd()
+Run any 7z command with custom parameters.
+```javascript
+await _7z.cmd(['a', 'path/to/archive.7z', 'path/to/dir/or/file']);
+```
 
-```javaScript
-// cmd with callback
-// in the first parameter you have to provide an array of parameters
-// check 7z's Command Line Version User's Guide - https://web.mit.edu/outland/arch/i386_rhel4/build/p7zip-current/DOCS/MANUAL/
-// the bellow command is equal to `7za a path/to/archive.7z path/to/dir/or/file` and will add `path/to/dir/or/file` to `path/to/archive.7z` archive
-_7z.cmd(['a', 'path/to/archive.7z', 'path/to/dir/or/file'], (err, output) => {
-    if (err) {
-        console.error('Error', err.message);
-    } else {
-        // Execution finished succesfully
-        console.log('stdout of the 7za command execution', output);
-    }
+#### Handling Output
+
+You can capture the standard output from the 7z command for logging or analysis. 
+```javascript 
+const stdout = await _7z.pack('path/to/dir/or/file', 'path/to/archive.7z'); 
+console.log(stdout);
+```
+
+### Alternative Syntax (Callbacks & Promises)
+
+If you prefer not to use `async/await`, all methods are compatible with standard callbacks and `.then()` chains.
+
+**Callback style:**
+```javascript
+_7z.unpack('archive.7z', 'output', (err, output) => {
+    if (err) return console.error(err);
+    console.log('Unpacked!', output);
 });
+```
 
-// cmd with promise
-_7z.cmd(['a', 'path/to/archive.7z', 'path/to/dir/or/file'])
-    .then(output => console.log('stdout of the 7za command execution', output))
-    .catch(err => console.error('Error', err.message));
-
-// cmd with async/await
-(async () => {
-    try {
-        const output = await _7z.cmd(['a', 'path/to/archive.7z', 'path/to/dir/or/file']);
-        console.log('stdout of the 7za command execution', output);
-    } catch (err) {
-        console.error('Error', err.message);
-    }
-})();
+**Promise style:**
+```javascript
+_7z.list('archive.7z')
+    .then(list => console.log(list))
+    .catch(err => console.error(err));
 ```
 
 ### Custom 7za path
 
 Sometimes, you may want to use a custom path to the 7za binary. See https://github.com/onikienko/7zip-min/pull/106 for more details.
 
-```javaScript
+```javascript
 // To find out the path to the 7za binary, you can use the getConfig() method
 const config = _7z.getConfig();
-console.log(`Path to 7za binary: ${config.binaryPath}`); 
+console.log(`Path to 7za binary: ${config.binaryPath}`);
 
 // To set a custom path to the 7za binary, you can use the config() method
 _7z.config({
