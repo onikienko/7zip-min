@@ -15,7 +15,7 @@ function getDefaultBinaryPath() {
     // https://github.com/sindresorhus/electron-util/blob/6c37341e43cdaa890e9145d6065f14b864c8befc/source/node/index.ts#L38
     const isUsingAsar = 'electron' in process.versions
         && process.argv.length > 1
-        && process.argv[1]?.includes('app.asar');
+        && process.argv[1].includes('app.asar');
 
     return isUsingAsar ? path7za.replace('app.asar', 'app.asar.unpacked') : path7za;
 }
