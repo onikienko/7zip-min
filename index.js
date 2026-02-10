@@ -97,7 +97,7 @@ function resolveOptionalDest(args, destPathOrCb, cb) {
 
 /**
  * Unpack archive.
- * @param {string} pathToPack - path to archive you want to unpack.
+ * @param {string} pathToArch - path to archive you want to unpack.
  * @param {string|callbackFn} destPathOrCb - Either:
  * - (i) destination path, where to unpack.
  * - (ii) callback function, in case no destPath to be specified
@@ -105,15 +105,15 @@ function resolveOptionalDest(args, destPathOrCb, cb) {
  *
  * NOTE: Providing a destination path is optional. In case it is not provided, cb is expected as the second argument to function.
  */
-function unpack(pathToPack, destPathOrCb, cb) {
-    const args = ['x', pathToPack, '-y'];
+function unpack(pathToArch, destPathOrCb, cb) {
+    const args = ['x', pathToArch, '-y'];
     cb = resolveOptionalDest(args, destPathOrCb, cb);
     run(args, cb);
 }
 
 /**
  * Unpack a specific file (or files) from an archive, recursively.
- * @param {string} pathToPack - path to archive you want to unpack.
+ * @param {string} pathToArch - path to archive you want to unpack.
  * @param {string[]} filesToUnpack - array of file/directory names to unpack from the archive.
  * @param {string|callbackFn} destPathOrCb - Either:
  * - (i) destination path, where to unpack.
@@ -122,8 +122,8 @@ function unpack(pathToPack, destPathOrCb, cb) {
  *
  * NOTE: Providing a destination path is optional. In case it is not provided, cb is expected as the third argument to function.
  */
-function unpackSome(pathToPack, filesToUnpack, destPathOrCb, cb) {
-    const args = ['x', pathToPack, '-y', '-r'];
+function unpackSome(pathToArch, filesToUnpack, destPathOrCb, cb) {
+    const args = ['x', pathToArch, '-y', '-r'];
     cb = resolveOptionalDest(args, destPathOrCb, cb);
 
     if (!Array.isArray(filesToUnpack)) {
@@ -140,20 +140,20 @@ function unpackSome(pathToPack, filesToUnpack, destPathOrCb, cb) {
 /**
  * Pack file or folder to archive.
  * @param {string} pathToSrc - path to file or folder you want to compress.
- * @param {string} pathToDest - path to archive you want to create.
+ * @param {string} pathToArch - path to archive you want to create.
  * @param {callbackFn} cb - callback function. Will be called once pack is done. If no errors, first parameter will contain `null`.
  */
-function pack(pathToSrc, pathToDest, cb) {
-    run(['a', pathToDest, pathToSrc], cb);
+function pack(pathToSrc, pathToArch, cb) {
+    run(['a', pathToArch, pathToSrc], cb);
 }
 
 /**
  * Get an array with compressed file contents.
- * @param {string} pathToSrc - path to file its content you want to list.
+ * @param {string} pathToArch - path to file its content you want to list.
  * @param {listCallbackFn} cb - callback function. Will be called once list is done. If no errors, first parameter will contain `null`.
  */
-function list(pathToSrc, cb) {
-    run(['l', '-slt', '-ba', '-sccUTF-8', pathToSrc], cb);
+function list(pathToArch, cb) {
+    run(['l', '-slt', '-ba', '-sccUTF-8', pathToArch], cb);
 }
 
 /**

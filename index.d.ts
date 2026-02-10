@@ -83,84 +83,84 @@ export function config(cfg: ConfigSettings): void;
 
 /**
  * Unpacks an archive.
- * @param pathToPack Path to the archive file.
+ * @param pathToArch Path to the archive file.
  * @param destPath Optional destination path. If not provided, unpacks to the current directory.
  * @returns A promise that resolves with the command output.
  * @example
  * await _7z.unpack('archive.7z', 'target/path');
  */
-export function unpack(pathToPack: string, destPath?: string): Promise<string>;
+export function unpack(pathToArch: string, destPath?: string): Promise<string>;
 /**
  * Unpacks an archive using a callback.
- * @param pathToPack Path to the archive file.
+ * @param pathToArch Path to the archive file.
  * @param cb Callback function called when unpacking is complete.
  */
-export function unpack(pathToPack: string, cb: CallbackFn): void;
+export function unpack(pathToArch: string, cb: CallbackFn): void;
 /**
  * Unpacks an archive to a specific destination using a callback.
- * @param pathToPack Path to the archive file.
+ * @param pathToArch Path to the archive file.
  * @param destPath Destination path where the archive will be unpacked.
  * @param cb Callback function called when unpacking is complete.
  */
-export function unpack(pathToPack: string, destPath: string, cb: CallbackFn): void;
+export function unpack(pathToArch: string, destPath: string, cb: CallbackFn): void;
 
 /**
  * Unpacks specific files or directories from an archive.
- * @param pathToPack Path to the archive file.
+ * @param pathToArch Path to the archive file.
  * @param filesToUnpack Array of file/directory paths to extract from the archive.
  * @param destPath Optional destination path. If not provided, unpacks to the current directory.
  * @returns A promise that resolves with the command output.
  * @example
  * await _7z.unpackSome('archive.7z', ['file1.txt', 'dir1'], 'target/path');
  */
-export function unpackSome(pathToPack: string, filesToUnpack: string[], destPath?: string): Promise<string>;
+export function unpackSome(pathToArch: string, filesToUnpack: string[], destPath?: string): Promise<string>;
 /**
  * Unpacks specific files or directories from an archive using a callback.
- * @param pathToPack Path to the archive file.
+ * @param pathToArch Path to the archive file.
  * @param filesToUnpack Array of file/directory paths to extract from the archive.
  * @param cb Callback function called when unpacking is complete.
  */
-export function unpackSome(pathToPack: string, filesToUnpack: string[], cb: CallbackFn): void;
+export function unpackSome(pathToArch: string, filesToUnpack: string[], cb: CallbackFn): void;
 /**
  * Unpacks specific files or directories from an archive to a destination using a callback.
- * @param pathToPack Path to the archive file.
+ * @param pathToArch Path to the archive file.
  * @param filesToUnpack Array of file/directory paths to extract from the archive.
  * @param destPath Destination path where the files will be unpacked.
  * @param cb Callback function called when unpacking is complete.
  */
-export function unpackSome(pathToPack: string, filesToUnpack: string[], destPath: string, cb: CallbackFn): void;
+export function unpackSome(pathToArch: string, filesToUnpack: string[], destPath: string, cb: CallbackFn): void;
 
 /**
  * Packs files or directories into an archive.
  * @param pathToSrc Path to the source file or directory.
- * @param pathToDest Path where the archive will be created.
+ * @param pathToArch Path where the archive will be created.
  * @returns A promise that resolves with the command output.
  * @example
  * await _7z.pack('source/path', 'archive.7z');
  */
-export function pack(pathToSrc: string, pathToDest: string): Promise<string>;
+export function pack(pathToSrc: string, pathToArch: string): Promise<string>;
 /**
  * Packs files or directories into an archive using a callback.
  * @param pathToSrc Path to the source file or directory.
- * @param pathToDest Path where the archive will be created.
+ * @param pathToArch Path where the archive will be created.
  * @param cb Callback function called when packing is complete.
  */
-export function pack(pathToSrc: string, pathToDest: string, cb: CallbackFn): void;
+export function pack(pathToSrc: string, pathToArch: string, cb: CallbackFn): void;
 
 /**
  * Lists the contents of an archive.
- * @param pathToSrc Path to the archive file.
+ * @param pathToArch Path to the archive file.
  * @returns A promise that resolves with an array of archive items.
  * @example
  * const items = await _7z.list('archive.7z');
  */
-export function list(pathToSrc: string): Promise<ListItem[]>;
+export function list(pathToArch: string): Promise<ListItem[]>;
 /**
  * Lists the contents of an archive using a callback.
- * @param pathToSrc Path to the archive file.
+ * @param pathToArch Path to the archive file.
  * @param cb Callback function called with the list of archive items.
  */
-export function list(pathToSrc: string, cb: ListCallbackFn): void;
+export function list(pathToArch: string, cb: ListCallbackFn): void;
 
 /**
  * Runs a custom 7-zip command.
