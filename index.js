@@ -256,10 +256,11 @@ function parseListOutput(str) {
             const val = data[1].trim();
             if (LIST_MAP[name]) {
                 if (LIST_MAP[name] === 'dateTime') {
-                    const dtArr = val.split(' ');
-                    if (dtArr.length !== 2) continue;
-                    obj['date'] = dtArr[0];
-                    obj['time'] = dtArr[1];
+                    const dtArr = val.split(/\s+/);
+                    if (dtArr.length >= 2) {
+                        obj['date'] = dtArr[0];
+                        obj['time'] = dtArr[1];
+                    }
                 } else {
                     obj[LIST_MAP[name]] = val;
                 }
