@@ -2,8 +2,14 @@
   "name": "7zip-min",
   "version": "2.1.0",
   "description": "Standalone cross-platform zip/unzip with 7za",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.mjs",
+      "require": "./src/index.js"
+    }
+  },
   "scripts": {
     "release": "dotenv release-it --",
     "preview": "release-it --dry-run",
@@ -14,8 +20,9 @@
     "url": "git+https://github.com/onikienko/7zip-min.git"
   },
   "files": [
-    "index.js",
-    "index.d.ts"
+    "src/index.js",
+    "src/index.mjs",
+    "src/index.d.ts"
   ],
   "keywords": [
     "7z",

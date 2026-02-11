@@ -36,6 +36,11 @@ Usage
 All methods return a `Promise` (useable with `async/await`) and also support standard Node.js callbacks as the last argument. The Promise resolves with the standard output (stdout) of the 7z command (except `list()` which returns an array of objects).
 
 ```javascript
+import _7z from '7zip-min';
+// Named imports 
+import { unpack, unpackSome, pack, list, cmd } from '7zip-min';
+
+// or CJS syntax
 const _7z = require('7zip-min');
 ```
 

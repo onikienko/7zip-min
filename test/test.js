@@ -1,6 +1,6 @@
 'use strict';
 
-const _7z = require('../index');
+const _7z = require('../src/index.js');
 const test = require('ava');
 const {remove, pathExists} = require('fs-extra');
 const {join} = require('path');
