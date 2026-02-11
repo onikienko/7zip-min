@@ -27,6 +27,8 @@ Supporting platforms
 
 To get more details, check [7zip-bin](https://github.com/develar/7zip-bin) package repo. 
 
+Supports Node.js v10+.
+
 Package should work with Electron. 
 You will have to unpack the binary ([`asarUnpack`](https://www.electron.build/configuration#asarunpack) option if you use `electron-builder`.) 
 
