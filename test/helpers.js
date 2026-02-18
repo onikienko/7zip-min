@@ -1,8 +1,8 @@
 'use strict';
 
-const {resolve, join} = require('path');
+const { resolve, join } = require('path');
 // for compatibility with Node 10+
-const {readdir, stat} = require('fs').promises;
+const { readdir, stat } = require('fs').promises;
 
 const SRC_DIR_NAME = 'testDir';
 const SRC_DIR_PATH = join(__dirname, SRC_DIR_NAME);
@@ -28,20 +28,18 @@ async function walkFolder(folderPath) {
   for (const item of items) {
     const itemPath = resolve(folderPath, item);
     const isDir = (await stat(itemPath)).isDirectory();
-    isDir ? files.push(...await walkFolder(itemPath)) : files.push(itemPath);
+    isDir ? files.push(...(await walkFolder(itemPath))) : files.push(itemPath);
   }
   return files;
 }
 
 // Returns two arrays: [unpackedFiles, sourceFiles] where each entry is a POSIX-style relative path
 async function getFilesList(unpackSrcPath) {
-    const unpacked = (await walkFolder(unpackSrcPath))
-        .map(p => toPosixRelative(unpackSrcPath, p));
+  const unpacked = (await walkFolder(unpackSrcPath)).map((p) => toPosixRelative(unpackSrcPath, p));
 
-    const source = (await walkFolder(SRC_DIR_PATH))
-        .map(p => toPosixRelative(SRC_DIR_PATH, p));
+  const source = (await walkFolder(SRC_DIR_PATH)).map((p) => toPosixRelative(SRC_DIR_PATH, p));
 
-    return [unpacked, source];
+  return [unpacked, source];
 }
 
 // Recursively generate posix-style relative paths from a fsify-like structure

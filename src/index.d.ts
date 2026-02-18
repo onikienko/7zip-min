@@ -2,56 +2,56 @@
  * Configuration settings for 7zip-min.
  */
 export interface ConfigSettings {
-    /**
-     * Path to the 7z binary.
-     */
-    binaryPath?: string;
+  /**
+   * Path to the 7z binary.
+   */
+  binaryPath?: string;
 }
 
 /**
  * Represents an item within an archive.
  */
 export interface ListItem {
-    /**
-     * Path to the file or directory.
-     */
-    name: string;
-    /**
-     * Uncompressed size in bytes (string as returned by 7z).
-     */
-    size?: string;
-    /**
-     * Compressed (packed) size in bytes (string as returned by 7z).
-     */
-    compressed?: string;
-    /**
-     * Modified date.
-     */
-    date?: string;
-    /**
-     * Modified time.
-     */
-    time?: string;
-    /**
-     * File or directory attributes.
-     */
-    attr?: string;
-    /**
-     * CRC checksum.
-     */
-    crc?: string;
-    /**
-     * Indicates if the item is encrypted.
-     */
-    encrypted?: string;
-    /**
-     * Compression method used.
-     */
-    method?: string;
-    /**
-     * Block number.
-     */
-    block?: string;
+  /**
+   * Path to the file or directory.
+   */
+  name: string;
+  /**
+   * Uncompressed size in bytes (string as returned by 7z).
+   */
+  size?: string;
+  /**
+   * Compressed (packed) size in bytes (string as returned by 7z).
+   */
+  compressed?: string;
+  /**
+   * Modified date.
+   */
+  date?: string;
+  /**
+   * Modified time.
+   */
+  time?: string;
+  /**
+   * File or directory attributes.
+   */
+  attr?: string;
+  /**
+   * CRC checksum.
+   */
+  crc?: string;
+  /**
+   * Indicates if the item is encrypted.
+   */
+  encrypted?: string;
+  /**
+   * Compression method used.
+   */
+  method?: string;
+  /**
+   * Block number.
+   */
+  block?: string;
 }
 
 /**
