@@ -1,6 +1,5 @@
 'use strict';
 
-// Export a factory which accepts the fsify instance and returns the structure
 const { SRC_DIR_NAME } = require('./helpers');
 
 module.exports = function makeFolderStructure(fsify) {
