@@ -56,7 +56,7 @@
     "@types/fs-extra": "^11.0.4",
     "ava": "^6.2.0",
     "dotenv-cli": "^8.0.0",
-    "fs-extra": "^11.3.0",
+    "fs-extra": "^11.3.3",
     "fsify": "^5.0.0",
     "prettier": "^3.8.1",
     "release-it": "^19.2.4"
