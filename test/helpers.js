@@ -1,7 +1,8 @@
 'use strict';
 
 const {resolve, join} = require('path');
-const {readdir, stat} = require('fs/promises');
+// for compatibility with Node 10+
+const {readdir, stat} = require('fs').promises;
 
 const SRC_DIR_NAME = 'testDir';
 const SRC_DIR_PATH = join(__dirname, SRC_DIR_NAME);
