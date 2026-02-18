@@ -4,6 +4,7 @@
     "publish": true
   },
   "git": {
+    "requireBranch": ["master", "main"],
     "requireCleanWorkingDir": true,
     "commitMessage": "v${version}",
     "pushRepo": "origin",
@@ -14,6 +15,9 @@
     "release": true,
     "releaseName": "v${version}",
     "tokenRef": "GITHUB_TOKEN"
+  },
+  "hooks": {
+    "before:init": "npm test"
   },
   "plugins": {
     "@release-it/conventional-changelog": {
