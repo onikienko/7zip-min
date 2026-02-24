@@ -19,7 +19,7 @@ module.exports = function makeFolderStructure(fsify) {
             },
             {
               type: fsify.FILE,
-              name: 'СлаваУкраїні!',
+              name: '-СлаваУкраїні!',
               contents: 'Glory to Ukraine!',
             },
           ],

@@ -129,8 +129,9 @@ function unpackSome(pathToArch, filesToUnpack, destPathOrCb, cb) {
   if (filesToUnpack.length === 0) {
     return cb(new Error('No files to unpack specified'));
   }
-
-  run(args.concat(filesToUnpack), cb);
+  // if a filename in filesToUnpack starts with a `-` (e.g. -file.txt), 7z might interpret it as a switch
+  // add the end-of-switches delimiter `--` before the file list
+  run(args.concat('--', filesToUnpack), cb);
 }
 
 /**

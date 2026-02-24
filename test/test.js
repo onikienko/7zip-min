@@ -128,9 +128,20 @@ test.serial('unpackSome', async (t) => {
   t.true(await pathExists(join(UNPACK_PATH, SRC_DIR_NAME, 'Brasileirão de Seleções.txt')));
 
   // Check that other files were NOT extracted
-  t.false(await pathExists(join(UNPACK_PATH, SRC_DIR_NAME, 'dir1', 'СлаваУкраїні!')));
+  t.false(await pathExists(join(UNPACK_PATH, SRC_DIR_NAME, 'dir1', '-СлаваУкраїні!')));
   t.false(await pathExists(join(UNPACK_PATH, SRC_DIR_NAME, 'ウクライナ.txt')));
 
+  t.is(typeof output, 'string');
+});
+
+// ensure that filename which starts with `-` not interpreted as a switch
+test.serial('unpackSome filename which starts with `-`', async (t) => {
+  await remove(UNPACK_PATH);
+  t.false(await pathExists(UNPACK_PATH));
+
+  const filesToExtract = ['-СлаваУкраїні!'];
+  const output = await _7z.unpackSome(ARCH_PATH, filesToExtract, UNPACK_PATH);
+  t.true(await pathExists(join(UNPACK_PATH, SRC_DIR_NAME, 'dir1', '-СлаваУкраїні!')));
   t.is(typeof output, 'string');
 });
 
@@ -145,7 +156,7 @@ test.serial('unpackSome to the current path', async (t) => {
   // Check that dir1 and its contents were extracted
   t.true(await pathExists(join(UNPACK_IN_CURRENT_PATH, 'dir1')));
   t.true(await pathExists(join(UNPACK_IN_CURRENT_PATH, 'dir1', 'Some = File = Name.txt')));
-  t.true(await pathExists(join(UNPACK_IN_CURRENT_PATH, 'dir1', 'СлаваУкраїні!')));
+  t.true(await pathExists(join(UNPACK_IN_CURRENT_PATH, 'dir1', '-СлаваУкраїні!')));
 
   // Check that other files at the root level were NOT extracted
   t.false(await pathExists(join(UNPACK_IN_CURRENT_PATH, 'Brasileirão de Seleções.txt')));
@@ -168,7 +179,7 @@ test.serial('unpackSome with wildcard patterns to the current path', async (t) =
   t.true(await pathExists(join(UNPACK_IN_CURRENT_PATH, 'ウクライナ.txt')));
   t.true(await pathExists(join(UNPACK_IN_CURRENT_PATH, 'dir1', 'Some = File = Name.txt')));
 
-  t.false(await pathExists(join(UNPACK_IN_CURRENT_PATH, 'dir1', 'СлаваУкраїні!')));
+  t.false(await pathExists(join(UNPACK_IN_CURRENT_PATH, 'dir1', '-СлаваУкраїні!')));
 
   t.is(typeof output, 'string');
 });
