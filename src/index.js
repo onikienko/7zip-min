@@ -41,6 +41,15 @@ function getConfig() {
  * @param {ConfigSettings} cfg - configuration settings.
  */
 function config(cfg) {
+  if (cfg === null || typeof cfg !== 'object' || Array.isArray(cfg)) {
+    throw new TypeError('config expects an object');
+  }
+  if (Object.prototype.hasOwnProperty.call(cfg, 'binaryPath')) {
+    if (typeof cfg.binaryPath !== 'string' || cfg.binaryPath.trim().length === 0) {
+      throw new TypeError('config.binaryPath must be a non-empty string');
+    }
+  }
+
   Object.assign(configSettings, cfg);
 }
 

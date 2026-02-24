@@ -242,6 +242,28 @@ test.serial('custom binary path that exists', async (t) => {
   t.is(typeof output, 'string');
 });
 
+test.serial('config throws when passed a non-object', (t) => {
+  const badInputs = [null, undefined, 'string', 123, [], true];
+  for (const inp of badInputs) {
+    t.throws(() => _7z.config(inp), { instanceOf: TypeError });
+  }
+});
+
+test.serial('config throws when binaryPath property is present but invalid', (t) => {
+  t.throws(() => _7z.config({ binaryPath: null }), { instanceOf: TypeError });
+  t.throws(() => _7z.config({ binaryPath: '' }), { instanceOf: TypeError });
+  t.throws(() => _7z.config({ binaryPath: 123 }), { instanceOf: TypeError });
+});
+
+test.serial('config accepts a valid binaryPath and getConfig reflects it', (t) => {
+  const old = _7z.getConfig();
+  _7z.config({ binaryPath: CUSTOM_BINARY_PATH });
+  const updated = _7z.getConfig();
+  t.is(updated.binaryPath, CUSTOM_BINARY_PATH);
+  // restore
+  _7z.config(old);
+});
+
 test.after.always('cleanup', async () => {
   await remove(SRC_DIR_PATH);
   await remove(ARCH_PATH);
