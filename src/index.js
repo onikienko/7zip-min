@@ -239,7 +239,7 @@ function onceify(fn) {
 }
 
 function parseListOutput(str) {
-  if (!str.length) return [];
+  if (typeof str !== 'string' || !str.length) return [];
   str = str.replace(/(\r\n|\n|\r)/gm, '\n');
   const items = str.split(/^\s*$/m);
   const res = [];
