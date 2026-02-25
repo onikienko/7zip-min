@@ -1,6 +1,6 @@
 {
   "name": "7zip-min",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "Standalone cross-platform zip/unzip with 7za",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",

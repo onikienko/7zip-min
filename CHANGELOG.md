@@ -1,5 +1,55 @@
 # Changelog
 
+## [3.0.0](https://github.com/onikienko/7zip-min/compare/v2.1.0...v3.0.0) (2026-02-25)
+
+### ⚠ BREAKING CHANGES
+
+* enhance error handling by introducing SevenZipMinError interface and updating callback signatures
+* **types:** all props except "name" are optional for ListItem
+* it changes an Error message
+
+### Features
+
+* add unpackSome() function ([76e3ddd](https://github.com/onikienko/7zip-min/commit/76e3dddfa28ef58c1c48e431cbebcb433d192658)), closes [#71](https://github.com/onikienko/7zip-min/issues/71)
+* enhance error handling by introducing SevenZipMinError interface and updating callback signatures ([c9a1df0](https://github.com/onikienko/7zip-min/commit/c9a1df0a24f10c8c8f8e3fdeb5573d0fe7d3f53c))
+* support for ESM import ([9ac13eb](https://github.com/onikienko/7zip-min/commit/9ac13eb1b472ba74db28061727158d5348f11d4e))
+
+### Bug Fixes
+
+* add type check for function in onceify() ([0e8a2c2](https://github.com/onikienko/7zip-min/commit/0e8a2c271e210d4f2cb3cbeb264702b76628a758))
+* additional check for parseListOutput ([eeb13c8](https://github.com/onikienko/7zip-min/commit/eeb13c8cd04f784138836a05d88e1d60bdd95d12))
+* cleaner regex for parseListOutput ([5231ec7](https://github.com/onikienko/7zip-min/commit/5231ec78f29af45e37b3e99ccd3b012f83557908))
+* early callback on error in process execution ([a3cebfc](https://github.com/onikienko/7zip-min/commit/a3cebfc9619410f321e53700112706b801a6207e))
+* enhance dateTime parsing for list() to handle multiple spaces ([5eee737](https://github.com/onikienko/7zip-min/commit/5eee7372a18887ebf529c474131bc852bb06fa6b))
+* ensure list res items have a name property ([e6cba73](https://github.com/onikienko/7zip-min/commit/e6cba7395ce6ad79bd5a3d5471983d59065953be))
+* guard Buffer.concat in run() ([16ab46b](https://github.com/onikienko/7zip-min/commit/16ab46b0d6a0d5bd1c64b3f4e70a7e0d406cbfda))
+* handle names starting with `-` for unpackSome ([f081746](https://github.com/onikienko/7zip-min/commit/f081746a8d41b7e5aa34a6e1856cb0b84b09949c))
+* improve run() ([f7c6fb8](https://github.com/onikienko/7zip-min/commit/f7c6fb8ebd8228275965992e36517ec4bf92dd62))
+* improve stdout and stderr handling in run() function ([0d6e2f3](https://github.com/onikienko/7zip-min/commit/0d6e2f3f82e177f9136f6147892a250e5d1d845f))
+* support for non-Latin filenames in the list() function ([2d91e60](https://github.com/onikienko/7zip-min/commit/2d91e60050c1df7532d7f11c0e0e1d27c4b9896a)), closes [#86](https://github.com/onikienko/7zip-min/issues/86)
+* **types:** all props except "name" are optional for ListItem ([fa4a0b6](https://github.com/onikienko/7zip-min/commit/fa4a0b6fcfe6ce2cefae16f04525c624a114dd73))
+* validate config input and binaryPath property ([5f6ee76](https://github.com/onikienko/7zip-min/commit/5f6ee768737bfdaf6c6a9b44bae19ad29a9e7179))
+
+### Documentation
+
+* enhance type definitions and documentation ([b2e5204](https://github.com/onikienko/7zip-min/commit/b2e5204b0fff192357b44b35a9f42c6fe8625628))
+* update error handling section to include detailed error properties ([2d60aba](https://github.com/onikienko/7zip-min/commit/2d60aba2b710eacaff62579496a88b49b266d3f9))
+* update Features section ([3d79656](https://github.com/onikienko/7zip-min/commit/3d796564cd945ac1cad039ff61cf1cdba2d58640))
+* update README to improve clarity ([72882d7](https://github.com/onikienko/7zip-min/commit/72882d70a80ace469f892db1912d012f762bfd66))
+* update README to specify support for Node.js v10+ ([e9a23ae](https://github.com/onikienko/7zip-min/commit/e9a23ae66f3487f5bc6e44a190fa0b851286b9ad))
+* update README with enhanced features, usage examples, and API methods ([cbfd3ab](https://github.com/onikienko/7zip-min/commit/cbfd3ab4836c14c8d1f1e99993c358cbafa66943))
+
+### Build System and Dependencies
+
+* **deps:** bump `ava` to v6.4.1 ([cf9c8da](https://github.com/onikienko/7zip-min/commit/cf9c8dab242304e67bd43cd41a9f187e8a8344bd))
+* **deps:** bump `brace-expansion`, `js-yaml`, and `lodash` ([ec54019](https://github.com/onikienko/7zip-min/commit/ec54019d8604d0636fbec9e524b1e9d104f073db))
+* **deps:** bump `dotenv-cli` to v11.0.0 ([16fb748](https://github.com/onikienko/7zip-min/commit/16fb748ffe36d2f4ec49773552e41841c8cfe9cb))
+* **deps:** bump `fs-extra` to v11.3.3 ([f121831](https://github.com/onikienko/7zip-min/commit/f121831c99a5e5b1a1e0bef32ff3d507254df33c))
+* **deps:** bump `release-it` and `conventional-changelog` deps ([a2b5cb8](https://github.com/onikienko/7zip-min/commit/a2b5cb89df1b7f4ec3ec2df07e921326eef676ca))
+* **deps:** npm audit fix ([d17b47e](https://github.com/onikienko/7zip-min/commit/d17b47e5cb2cd8a13ccdae5b01b6a65b5ad983b0))
+* remove Dependabot configuration file ([88be6c5](https://github.com/onikienko/7zip-min/commit/88be6c54ccbccd4fb682732f2f726e2983289723))
+* update release-it configuration ([f96378f](https://github.com/onikienko/7zip-min/commit/f96378f497d874ecc084dd473634df2b4493d13b))
+
 ## [2.1.0](https://github.com/onikienko/7zip-min/compare/v2.0.0...v2.1.0) (2025-04-11)
 
 ### Features
