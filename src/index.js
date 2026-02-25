@@ -56,27 +56,36 @@ function config(cfg) {
 /**
  * @typedef {Object} ListItem
  * @property {string} name - path to file/dir
- * @property {string} size - size
- * @property {string} compressed - packed size
- * @property {string} date - modified date
- * @property {string} time - modified time
- * @property {string} attr - attributes
- * @property {string} crc - CRC
- * @property {string} encrypted - encrypted
- * @property {string} method - compression method
- * @property {string} block - block
+ * @property {string} [size] - size
+ * @property {string} [compressed] - packed size
+ * @property {string} [date] - modified date
+ * @property {string} [time] - modified time
+ * @property {string} [attr] - attributes
+ * @property {string} [crc] - CRC
+ * @property {string} [encrypted] - encrypted
+ * @property {string} [method] - compression method
+ * @property {string} [block] - block
  */
 
 /**
+ * @typedef {Error} SevenZipMinError
+ * @extends {Error}
+ * @property {string} [stdout] - stdout output
+ * @property {string} [stderr] - stderr output
+ * @property {number|string} [code] - exit code
+ */
+
+
+/**
  * @callback callbackFn
- * @param {Error|null} err - error object. Will be `null` if no errors.
+ * @param {SevenZipMinError|null} err - error object. Will be `null` if no errors.
  * @param {string} [output] - output of the 7z command execution if no errors
  * @returns {void}
  */
 
 /**
  * @callback listCallbackFn
- * @param {Error|null} err - error object. Will be `null` if no errors.
+ * @param {SevenZipMinError|null} err - error object. Will be `null` if no errors.
  * @param {ListItem[]} [output] - result of list command execution if no errors
  * @returns {void}
  */
@@ -107,6 +116,7 @@ function resolveOptionalDest(args, destPathOrCb, cb) {
  * - (i) destination path, where to unpack.
  * - (ii) callback function, in case no destPath to be specified
  * @param {callbackFn} [cb] - callback function. Will be called once unpack is done. If no errors, first parameter will contain `null`
+ * @returns {Promise<string>} Promise that resolves with stdout if no callback is provided.
  *
  * NOTE: Providing a destination path is optional. In case it is not provided, cb is expected as the second argument to function.
  */
@@ -124,6 +134,7 @@ function unpack(pathToArch, destPathOrCb, cb) {
  * - (i) destination path, where to unpack.
  * - (ii) callback function, in case no destPath to be specified
  * @param {callbackFn} [cb] - callback function. Will be called once unpack is done. If no errors, first parameter will contain `null`
+ * @returns {Promise<string>} Promise that resolves with stdout if no callback is provided.
  *
  * NOTE: Providing a destination path is optional. In case it is not provided, cb is expected as the third argument to function.
  */
@@ -132,11 +143,11 @@ function unpackSome(pathToArch, filesToUnpack, destPathOrCb, cb) {
   cb = resolveOptionalDest(args, destPathOrCb, cb);
 
   if (!Array.isArray(filesToUnpack)) {
-    return cb(new Error('filesToUnpack must be an array'));
+    return cb(new TypeError('filesToUnpack must be an array'));
   }
 
   if (filesToUnpack.length === 0) {
-    return cb(new Error('No files to unpack specified'));
+    return cb(new TypeError('No files to unpack specified'));
   }
   // if a filename in filesToUnpack starts with a `-` (e.g. -file.txt), 7z might interpret it as a switch
   // add the end-of-switches delimiter `--` before the file list
@@ -147,7 +158,8 @@ function unpackSome(pathToArch, filesToUnpack, destPathOrCb, cb) {
  * Pack file or folder to archive.
  * @param {string} pathToSrc - path to file or folder you want to compress.
  * @param {string} pathToArch - path to archive you want to create.
- * @param {callbackFn} cb - callback function. Will be called once pack is done. If no errors, first parameter will contain `null`.
+ * @param {callbackFn} [cb] - callback function. Will be called once pack is done. If no errors, first parameter will contain `null`.
+ * @returns {Promise<string>} Promise that resolves with stdout if no callback is provided.
  */
 function pack(pathToSrc, pathToArch, cb) {
   run(['a', pathToArch, pathToSrc], cb);
@@ -156,7 +168,8 @@ function pack(pathToSrc, pathToArch, cb) {
 /**
  * Get an array with compressed file contents.
  * @param {string} pathToArch - path to file its content you want to list.
- * @param {listCallbackFn} cb - callback function. Will be called once list is done. If no errors, first parameter will contain `null`.
+ * @param {listCallbackFn} [cb] - callback function. Will be called once list is done. If no errors, first parameter will contain `null`.
+ * @returns {Promise<ListItem[]>} Promise that resolves with the list of items if no callback is provided.
  */
 function list(pathToArch, cb) {
   run(['l', '-slt', '-ba', '-sccUTF-8', pathToArch], cb);
@@ -164,13 +177,24 @@ function list(pathToArch, cb) {
 
 /**
  * Run 7za with parameters specified in `paramsArr`.
- * @param {array} paramsArr - array of parameter. Each array item is one parameter.
- * @param {callbackFn} cb - callback function. Will be called once command is done. If no errors, first parameter will contain `null`. If no output, second parameter will be `null`.
+ * @param {string[]} paramsArr - array of parameter. Each array item is one parameter.
+ * @param {callbackFn} [cb] - callback function. Will be called once command is done. If no errors, first parameter will contain `null`. If no output, second parameter will be `null`.
+ * @returns {Promise<string>} Promise that resolves with stdout if no callback is provided.
  */
 function cmd(paramsArr, cb) {
   run(paramsArr, cb);
 }
 
+/**
+ * Executes a command using the 7-zip binary with the given arguments and callback for handling results.
+ *
+ * @param {string[]} args - The array of arguments to pass to the 7-zip binary.
+ * @param {Function} cb - The callback function to execute upon completion. It receives parameters:
+ * - `err`: An error object if an error occurred, otherwise `null`.
+ * - `result`: The stdout output or parsed result if the command was successful.
+ *   In case of errors, detailed error information is provided.
+ * @return {void}
+ */
 function run(args, cb) {
   cb = onceify(cb);
   const proc = spawn(configSettings.binaryPath, args, { windowsHide: true });
@@ -199,8 +223,7 @@ function run(args, cb) {
 
     // 7zip exited with an error code
     if (code !== 0) {
-      const errorMessage = `7-zip exited with code ${code}.\nRaw Error Output:\n${stderr}\nRaw Output:\n${stdout}`;
-      return cb(new Error(errorMessage));
+      return cb(createError(`7-zip exited with code ${code}.`, stdout, stderr, code));
     }
 
     // Successful execution:
@@ -209,16 +232,30 @@ function run(args, cb) {
       try {
         return cb(null, parseListOutput(stdout));
       } catch (parseError) {
-        return cb(
-          new Error(
-            `Failed to parse 7-zip list output: ${parseError.message}\nRaw Error output:\n${stderr}\nRaw Output:\n${stdout}`,
-          ),
-        );
+        return cb(createError(`Failed to parse 7-zip list output: ${parseError.message}`, stdout, stderr, code));
       }
     }
     // all other cases of successful execution
     cb(null, stdout);
   });
+}
+
+/**
+ * Creates a standard SevenZipMinError.
+ * @param {string} baseMessage - The base error message.
+ * @param {string} stdout - The stdout output.
+ * @param {string} stderr - The stderr output.
+ * @param {number|string} [code] - The exit code of the 7z process.
+ * @returns {Error} err - The created error object.
+ */
+function createError(baseMessage, stdout, stderr, code) {
+  const err = new Error(baseMessage);
+  err.stdout = stdout;
+  err.stderr = stderr;
+  if (code !== undefined) {
+    err.code = code;
+  }
+  return err;
 }
 
 // http://stackoverflow.com/questions/30234908/javascript-v8-optimisation-and-leaking-arguments

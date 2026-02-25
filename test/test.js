@@ -214,7 +214,7 @@ test.serial('pack a path that does not exist', async (t) => {
     await _7z.pack(join(wrongPath), ARCH_PATH);
   });
   // the error output should contain a wrong path
-  const hasWrongPathMentioning = error.message.includes(wrongPath);
+  const hasWrongPathMentioning = error.stderr.includes(wrongPath);
   t.true(hasWrongPathMentioning);
 });
 
@@ -262,6 +262,18 @@ test.serial('config accepts a valid binaryPath and getConfig reflects it', (t) =
   t.is(updated.binaryPath, CUSTOM_BINARY_PATH);
   // restore
   _7z.config(old);
+});
+
+test.serial('error object contains code, stdout, and stderr', async (t) => {
+  const wrongPath = join(__dirname, 'noPath.7z');
+  const error = await t.throwsAsync(async () => {
+    await _7z.list(wrongPath);
+  });
+  t.is(typeof error.code, 'number');
+  t.true(error.code !== 0);
+  t.is(typeof error.stdout, 'string');
+  t.is(typeof error.stderr, 'string');
+  t.true(error.stderr.length > 0);
 });
 
 test.after.always('cleanup', async () => {

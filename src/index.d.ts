@@ -55,18 +55,36 @@ export interface ListItem {
 }
 
 /**
+ * Error object returned by 7zip-min commands.
+ */
+export interface SevenZipMinError extends Error {
+  /**
+   * The exit code of the 7z process.
+   */
+  code?: number | string;
+  /**
+   * The stdout output of the 7z command.
+   */
+  stdout?: string;
+  /**
+   * The stderr output of the 7z command.
+   */
+  stderr?: string;
+}
+
+/**
  * Callback function for general commands.
  * @param err Error object if the command failed, or null if successful.
  * @param output The stdout output of the 7z command.
  */
-export type CallbackFn = (err: Error | null, output?: string) => void;
+export type CallbackFn = (err: SevenZipMinError | null, output?: string) => void;
 
 /**
  * Callback function for the list command.
  * @param err Error object if the command failed, or null if successful.
  * @param listItems Array of items found in the archive.
  */
-export type ListCallbackFn = (err: Error | null, listItems?: ListItem[]) => void;
+export type ListCallbackFn = (err: SevenZipMinError | null, listItems?: ListItem[]) => void;
 
 /**
  * Returns the current configuration settings.
