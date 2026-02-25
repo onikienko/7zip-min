@@ -289,24 +289,23 @@ _7z.config({
 
 ## Error Handling
 
-All methods throw errors (or pass them to callbacks) when operations fail:
+All methods throw errors (or pass them to callbacks) when operations fail. The error object is an extended `Error` with
+additional properties:
+
+- `message`: Error message
+- `stderr`: Standard error output from 7z
+- `stdout`: Standard output from 7z (if any)
+- `code`: Exit code from 7z process
 
 ```javascript
 try {
   await _7z.unpack('nonexistent.7z');
 } catch (err) {
-  console.error('Failed to unpack:', err.message);
-  // Error message includes 7z exit code and output
+  console.error('Error message:', err.message);
+  console.log('Exit code', err.code);
+  console.error('Standard error:', err.stderr);
+  console.error('Standard output:', err.stdout);
 }
-
-// With callbacks
-_7z.pack('folder', 'archive.7z', (err, output) => {
-  if (err) {
-    console.error('Pack failed:', err.message);
-    return;
-  }
-  console.log('Success!');
-});
 ```
 
 ## See Also
