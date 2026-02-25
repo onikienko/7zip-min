@@ -180,6 +180,7 @@ function run(args, cb) {
 
   proc.on('error', (err) => {
     spawnError = err;
+    cb(err);
   });
 
   proc.stdout.on('data', (chunk) => {
@@ -191,11 +192,8 @@ function run(args, cb) {
   });
 
   proc.on('close', (code) => {
-    if (spawnError) {
-      return cb(spawnError);
-    }
+    if (spawnError) return;
 
-    // Guard Buffer.concat: Buffer.concat([]) throws, use empty string fallback
     const stdout = stdoutChunks.length ? Buffer.concat(stdoutChunks).toString() : '';
     const stderr = stderrChunks.length ? Buffer.concat(stderrChunks).toString() : '';
 
