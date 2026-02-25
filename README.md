@@ -9,11 +9,12 @@ This package includes a standalone **7za** version of **7-Zip** (uses precompile
 
 ## Features
 
-- **No external dependencies**: Includes precompiled 7za binaries from [7zip-bin](https://github.com/develar/7zip-bin)
-- **TypeScript ready**: Full type definitions included
-- **Cross-platform**: Works on Windows, macOS, and Linux
-- **Electron compatible**: Works with Electron apps
-- **Flexible API**: Supports Promises and callbacks
+- Includes precompiled 7za binaries from [7zip-bin](https://github.com/develar/7zip-bin)
+- Works on Windows, macOS, and Linux
+- Works with Electron apps
+- Full TypeScript type definitions included
+- Supports Promises and callbacks
+- Supports Node.js v10+
 
 ## Quick Start
 
