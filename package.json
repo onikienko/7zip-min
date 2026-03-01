@@ -20,7 +20,8 @@
     "format": "prettier --write .",
     "release": "dotenv release-it --",
     "preview": "release-it --dry-run",
-    "test": "ava test/test.js"
+    "test": "ava test/test.js",
+    "check-types": "attw --pack ."
   },
   "repository": {
     "type": "git",
@@ -59,6 +60,7 @@
     "7zip-bin": "5.1.1"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.2",
     "@release-it/conventional-changelog": "^10.0.5",
     "@types/fs-extra": "^11.0.4",
     "ava": "^6.4.1",
