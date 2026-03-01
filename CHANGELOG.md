@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.0.1](https://github.com/onikienko/7zip-min/compare/v3.0.0...v3.0.1) (2026-03-01)
+
+### Bug Fixes
+
+* correct ESM type resolution ([4d6b175](https://github.com/onikienko/7zip-min/commit/4d6b175846037433bc8b3135bb58ccf33b976df3)), closes [#136](https://github.com/onikienko/7zip-min/issues/136)
+
+### Build System and Dependencies
+
+* add type checking script using `@arethetypeswrong/cli` ([40b243d](https://github.com/onikienko/7zip-min/commit/40b243d76e98046d9319c57c6d09e3831e8260b0))
+
 ## [3.0.0](https://github.com/onikienko/7zip-min/compare/v2.1.0...v3.0.0) (2026-02-25)
 
 ### ⚠ BREAKING CHANGES
