@@ -6,8 +6,14 @@
   "types": "./src/index.d.ts",
   "exports": {
     ".": {
-      "import": "./src/index.mjs",
-      "require": "./src/index.js"
+      "import": {
+        "types": "./src/index.d.mts",
+        "default": "./src/index.mjs"
+      },
+      "require": {
+        "types": "./src/index.d.ts",
+        "default": "./src/index.js"
+      }
     }
   },
   "scripts": {
@@ -23,7 +29,8 @@
   "files": [
     "src/index.js",
     "src/index.mjs",
-    "src/index.d.ts"
+    "src/index.d.ts",
+    "src/index.d.mts"
   ],
   "keywords": [
     "7z",
