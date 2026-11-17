@@ -86,6 +86,12 @@ const _7z = require('7zip-min');
 
 All methods return a `Promise` and also support standard Node.js callbacks as the last argument. The Promise resolves with the standard output (stdout) of the 7z command (except `list()` which returns an array of objects).
 
+The `pack()`, `unpack()`, `unpackSome()`, and `list()` helpers require non-empty strings for source and archive paths.
+Every `filesToUnpack` entry must also be a non-empty string.
+Invalid values reject the Promise or are passed to the callback as a `TypeError`, before 7za starts.
+To extract to the current directory, omit `destPath` or pass `undefined` or an empty string (`''`).
+Input validation does not trim filename whitespace.
+
 ### `pack(pathToSrc, pathToArch, [callback])`
 
 Creates an archive from a file or directory.

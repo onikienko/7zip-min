@@ -110,6 +110,28 @@ function resolveOptionalDest(args, destPathOrCb, cb) {
 }
 
 /**
+ * Validate a path or selector without trimming significant filename whitespace.
+ * @param {string} value - Path or selector to validate.
+ * @param {string} name - Parameter name for the error message.
+ * @returns {TypeError|null} Validation error, if any.
+ */
+function getPathError(value, name) {
+  return typeof value !== 'string' || value.length === 0
+    ? new TypeError(name + ' must be a non-empty string')
+    : null;
+}
+
+/**
+ * Keep filesystem paths beginning with '@' from being read as 7-Zip listfiles.
+ * Older bundled binaries still parse listfiles after '--'.
+ * @param {string} path - Filesystem path.
+ * @returns {string} Path with listfile syntax escaped.
+ */
+function escapeListFilePath(path) {
+  return typeof path === 'string' && path.startsWith('@') ? './' + path : path;
+}
+
+/**
  * Unpack archive.
  * @param {string} pathToArch - path to archive you want to unpack.
  * @param {string|callbackFn} destPathOrCb - Either:
@@ -121,9 +143,14 @@ function resolveOptionalDest(args, destPathOrCb, cb) {
  * NOTE: Providing a destination path is optional. In case it is not provided, cb is expected as the second argument to function.
  */
 function unpack(pathToArch, destPathOrCb, cb) {
-  const args = ['x', pathToArch, '-y'];
+  const error =
+    getPathError(pathToArch, 'pathToArch') ||
+    (destPathOrCb !== undefined && destPathOrCb !== '' && getPathError(destPathOrCb, 'destPath'));
+  if (error) return cb(error);
+
+  const args = ['x', '-y'];
   cb = resolveOptionalDest(args, destPathOrCb, cb);
-  run(args, cb);
+  run(args.concat('--', escapeListFilePath(pathToArch)), cb);
 }
 
 /**
@@ -139,7 +166,12 @@ function unpack(pathToArch, destPathOrCb, cb) {
  * NOTE: Providing a destination path is optional. In case it is not provided, cb is expected as the third argument to function.
  */
 function unpackSome(pathToArch, filesToUnpack, destPathOrCb, cb) {
-  const args = ['x', pathToArch, '-y', '-r'];
+  const error =
+    getPathError(pathToArch, 'pathToArch') ||
+    (destPathOrCb !== undefined && destPathOrCb !== '' && getPathError(destPathOrCb, 'destPath'));
+  if (error) return cb(error);
+
+  const args = ['x', '-y', '-r'];
   cb = resolveOptionalDest(args, destPathOrCb, cb);
 
   if (!Array.isArray(filesToUnpack)) {
@@ -149,9 +181,19 @@ function unpackSome(pathToArch, filesToUnpack, destPathOrCb, cb) {
   if (filesToUnpack.length === 0) {
     return cb(new TypeError('No files to unpack specified'));
   }
-  // if a filename in filesToUnpack starts with a `-` (e.g. -file.txt), 7z might interpret it as a switch
-  // add the end-of-switches delimiter `--` before the file list
-  run(args.concat('--', filesToUnpack), cb);
+  const positionalFiles = [];
+  for (const file of filesToUnpack) {
+    const error = getPathError(file, 'filesToUnpack entries');
+    if (error) return cb(error);
+    if (typeof file === 'string' && file.startsWith('@')) {
+      // An explicit include pattern preserves recursive/wildcard matching without reading a listfile.
+      args.push('-i!' + file);
+    } else {
+      positionalFiles.push(file);
+    }
+  }
+  // Keep positional arguments after all switches so leading '-' characters are literal.
+  run(args.concat('--', escapeListFilePath(pathToArch), positionalFiles), cb);
 }
 
 /**
@@ -162,7 +204,10 @@ function unpackSome(pathToArch, filesToUnpack, destPathOrCb, cb) {
  * @returns {Promise<string>} Promise that resolves with stdout if no callback is provided.
  */
 function pack(pathToSrc, pathToArch, cb) {
-  run(['a', pathToArch, pathToSrc], cb);
+  const error = getPathError(pathToSrc, 'pathToSrc') || getPathError(pathToArch, 'pathToArch');
+  if (error) return cb(error);
+
+  run(['a', '--', escapeListFilePath(pathToArch), escapeListFilePath(pathToSrc)], cb);
 }
 
 /**
@@ -172,7 +217,10 @@ function pack(pathToSrc, pathToArch, cb) {
  * @returns {Promise<ListItem[]>} Promise that resolves with the list of items if no callback is provided.
  */
 function list(pathToArch, cb) {
-  run(['l', '-slt', '-ba', '-sccUTF-8', pathToArch], cb);
+  const error = getPathError(pathToArch, 'pathToArch');
+  if (error) return cb(error);
+
+  run(['l', '-slt', '-ba', '-sccUTF-8', '--', escapeListFilePath(pathToArch)], cb);
 }
 
 /**
@@ -326,9 +374,11 @@ function parseListOutput(str) {
 
 function universalCall(fn) {
   return function (...args) {
-    const cb = args.length >= 1 && typeof args[args.length - 1] === 'function';
+    const cb = typeof args[args.length - 1] === 'function' ? args.pop() : undefined;
+    // Keep the callback in its declared position even when required arguments are missing.
+    while (args.length < fn.length - 1) args.push(undefined);
     if (cb) {
-      return fn.apply(this, args);
+      return fn.apply(this, args.concat(cb));
     } else {
       return promisify(fn).apply(this, args);
     }
