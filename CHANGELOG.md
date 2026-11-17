@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.0.2](https://github.com/onikienko/7zip-min/compare/v3.0.1...v3.0.2)
+
+### Security fixes
+
+* Prevent caller-supplied paths from being interpreted as 7-Zip switches in `pack()`, `unpack()`, `unpackSome()`, and
+  `list()` (CWE-88).
+* Prevent unintended `@file` listfile interpretation while preserving literal filenames and supported extraction
+  patterns.
+* Reject empty or non-string required paths and extraction selectors before starting 7za. Errors are delivered through
+  the Promise or callback API.
+* Preserve empty optional extraction destinations as the current directory and preserve whitespace in input filenames.
+
+Applications that pass attacker-controlled source arguments to `pack()` and return the resulting archive can expose
+files readable by the 7za process. Users of affected versions (`<= 3.0.1`) should upgrade to `3.0.2`.
+
+Thanks to [kochoi95](https://github.com/kochoi95) for privately reporting the argument-injection vulnerability and
+reviewing and verifying the fix.
+
+The fix passed all 40 tests in each of 16 CI jobs: Linux, macOS, and Windows with Node.js 18, 20, 22, and 24, plus Linux
+with Node.js 10, 12, 14, and 16, using the bundled 7za binaries.
+
 ## [3.0.1](https://github.com/onikienko/7zip-min/compare/v3.0.0...v3.0.1) (2026-03-01)
 
 ### Bug Fixes
