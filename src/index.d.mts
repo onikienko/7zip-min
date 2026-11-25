@@ -150,8 +150,8 @@ export function unpackSome(pathToArch: string, filesToUnpack: string[], destPath
 
 /**
  * Packs files or directories into an archive.
- * @param pathToSrc Path to the source file or directory.
- * @param pathToArch Path where the archive will be created.
+ * @param pathToSrc Source file, directory, or 7-Zip wildcard pattern.
+ * @param pathToArch Path to the archive. Formats such as `.7z` and `.zip` support adding or updating entries.
  * @returns A promise that resolves with the 7z command output.
  * @example
  * await _7z.pack('source/path', 'archive.7z');
@@ -159,8 +159,8 @@ export function unpackSome(pathToArch: string, filesToUnpack: string[], destPath
 export function pack(pathToSrc: string, pathToArch: string): Promise<string>;
 /**
  * Packs files or directories into an archive using a callback.
- * @param pathToSrc Path to the source file or directory.
- * @param pathToArch Path where the archive will be created.
+ * @param pathToSrc Source file, directory, or 7-Zip wildcard pattern.
+ * @param pathToArch Path to the archive. Formats such as `.7z` and `.zip` support adding or updating entries.
  * @param cb Callback function called when packing is complete.
  */
 export function pack(pathToSrc: string, pathToArch: string, cb: CallbackFn): void;

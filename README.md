@@ -94,18 +94,25 @@ Input validation does not trim filename whitespace.
 
 ### `pack(pathToSrc, pathToArch, [callback])`
 
-Creates an archive from a file or directory.
+Uses 7-Zip's `a` (add) command to create the archive on the first call.
+For formats such as `.7z` and `.zip`, later calls add or update files and keep earlier entries, including files you have since removed from the source.
+Single-file formats such as `.gz` and `.bz2` reject attempts to add a second file.
 
 **Parameters:**
-- `pathToSrc` (string): Path to file or directory to compress
-- `pathToArch` (string): Path to archive to create
+- `pathToSrc` (string): File, directory, or 7-Zip wildcard pattern to compress
+- `pathToArch` (string): Path to the archive to create or update
 - `callback` (function, optional): Node.js callback function
 
 **Returns:** Promise\<string\> - stdout of 7z command
 
 ```javascript
-await _7z.pack('path/to/dir', 'archive.7z');
-await _7z.pack('path/to/file.txt', 'backup.zip');
+// Include the dir folder itself (e.g. dir/file.txt and dir/subfolder/note.txt).
+await _7z.pack('./path/to/dir', 'with-folder.7z');
+
+// Pack all files and subfolders inside dir at the archive root (e.g. file.txt and subfolder/note.txt).
+await _7z.pack('./path/to/dir/*', 'contents-only.7z');
+
+await _7z.pack('./path/to/file.txt', 'backup.zip');
 ```
 
 ### `unpack(pathToArch, [destPath], [callback])`

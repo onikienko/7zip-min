@@ -198,8 +198,8 @@ function unpackSome(pathToArch, filesToUnpack, destPathOrCb, cb) {
 
 /**
  * Pack file or folder to archive.
- * @param {string} pathToSrc - path to file or folder you want to compress.
- * @param {string} pathToArch - path to archive you want to create.
+ * @param {string} pathToSrc - source file, directory, or 7-Zip wildcard pattern.
+ * @param {string} pathToArch - Path to the archive. Formats such as `.7z` and `.zip` support adding or updating entries.
  * @param {callbackFn} [cb] - callback function. Will be called once pack is done. If no errors, first parameter will contain `null`.
  * @returns {Promise<string>} Promise that resolves with stdout if no callback is provided.
  */

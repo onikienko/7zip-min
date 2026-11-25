@@ -34,6 +34,38 @@ test.serial('pack', async (t) => {
   t.is(typeof output, 'string');
 });
 
+test.serial('pack stores directory contents at the archive root with a wildcard', async (t) => {
+  const dir = await mkdtemp(join(__dirname, 'pack-contents-'));
+  t.teardown(() => remove(dir));
+  const archive = join(dir, 'contents.7z');
+
+  await _7z.pack(join(SRC_DIR_PATH, '*'), archive);
+
+  const names = (await _7z.list(archive)).map((item) => item.name).sort();
+  t.deepEqual(names, getExpectedPathsFromStructure(folderStructure[0].contents).sort());
+});
+
+test.serial('pack updates existing entries and keeps files removed from the source', async (t) => {
+  const dir = await mkdtemp(join(__dirname, 'pack-update-'));
+  t.teardown(() => remove(dir));
+  const source = join(dir, 'source');
+  const archive = join(dir, 'release.7z');
+  const contents = join(source, '*');
+  await ensureDir(source);
+  await writeFile(join(source, 'current.txt'), 'first');
+  await writeFile(join(source, 'previous.txt'), 'previous');
+  await _7z.pack(contents, archive);
+
+  await remove(join(source, 'previous.txt'));
+  await writeFile(join(source, 'current.txt'), 'second version');
+  await _7z.pack(contents, archive);
+
+  const output = join(dir, 'output');
+  await _7z.unpack(archive, output);
+  t.is(await readFile(join(output, 'current.txt'), 'utf8'), 'second version');
+  t.is(await readFile(join(output, 'previous.txt'), 'utf8'), 'previous');
+});
+
 // Universal wrapper sanity test: ensure Promise form works
 test.serial('universalCall - promise', async (t) => {
   await remove(ARCH_PATH);
