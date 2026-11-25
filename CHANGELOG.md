@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.0.3](https://github.com/onikienko/7zip-min/compare/v3.0.2...v3.0.3) (2026-11-25)
+
+### Documentation
+
+* clarify pack() wildcard and archive update behavior ([e4aaa20](https://github.com/onikienko/7zip-min/commit/e4aaa20f53f627c70dbba1be3fc0b8db4ae6a221))
+
 ## [3.0.2](https://github.com/onikienko/7zip-min/compare/v3.0.1...v3.0.2)
 
 ### Security fixes
